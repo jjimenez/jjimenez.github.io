@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Post related to the javascript sound canvas project.">
+    <meta name="author" content="JJ (Jose Jimenez)">
+
+    <title>Sound Canvas</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/starter-template.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <script src="//google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+</head>
+
+<body>
+<div class="navbar-wrapper">
+    <div class="container">
+
+        <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">JJ's Demos</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="/">Home</a></li>
+                        <li><a href="/#about">About</a></li>
+                        <li><a href="/#contact">Contact</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li class="dropdown-header">Sound Canvas</li>
+                                <li><a href="soundCanvasPost">Information</a></li>
+                                <li><a href="soundCanvas.html">with Scaling</a></li>
+                                <li><a href="soundCanvasNoScaled.html">without Scaling</a></li>
+                                <li class="divider"></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+    </div>
+</div>
+
+
+<div class="container">
+
+    <div class="starter-template">
+        <h1 class='center'>Sound Canvas</h1>
+        <p class="lead center">A visualization of sound as a measure of engagement.</p>
+
+        <p>So here's the story:</p>
+        <p>I went to the <a href='http://obermann.uiowa.edu/'>University of Iowa Obermann Center</a> working symposium
+        <a href='http://designingthedigitalfuture.com/'>Designing the Digital Future</a> and it was pretty awe inspiring.</p>
+        <p>I was surrounded by many great thinkers doing some great things.</p>
+        <p>The symposium was kicked off by <a href='http://hci.uncc.edu/~clatulip/clwp/'>Celine Latulipe</a>
+            from the <a href='http://hci.uncc.edu/'>Human Computer Interaction Lab at UNC Charlotte</a>.  While I really enjoyed the talk,
+        one of interesting asides was related to her work on Sound Interaction.</p>
+        <p>When she started the talk, she opened up what I'll call a sound-reactive canvas.  As the audience made noise by asking questions,
+        laughing, clapping, or otherwise sharing their engagement audibly, the application painted dots across the screen.  At the end
+        of her talk she showed us what our engagement over the talk looked like.</p>
+        <p>This small, but significant, part of the symposium was something that I latched onto and decided to work with.</p>
+        <hr />
+        <p>This is what I ended up with:</p>
+        <div class='container-fluid'>
+            <div class='row'>
+                <div class='col-md-4'><img src='images/sleepyScaled.png' width="200px" alt='engagement image from Sleepy Hollow season 2, episode 8.'/></div>
+                <div class='col-md-4'><img src='images/sleepyNoScaled.png' width="200px" alt='engagement image from Sleepy Hollow season 2, episode 8. without scaled thumbnails'/></div>
+            </div>
+        </div>
+        <hr />
+        <p>These are visualizations captured while we watched "Heartless" the 8th episode of Sleepy Hollow season 2.</p>
+        <p>But this wounldn't be a technical post without a discussion of how I got there.</p>
+        <p>You can skip ahead by visiting either <a href='soundCanvasNoScaled.html'> the SoundCanvas</a>
+            or <a href='soundCanvasNoScaled.html'>the version without scaled thumbnails</a> and play with the demos. </p>
+        <p>You can also play with the code by forking this <a href='https://www.github.com/jjimenez/jjimenez.github.io'>github project</a>
+            or play with the <a href='http://jsfiddle.net/jose_jimenez/6w2sncvq/'>jsfiddle</a> in your browser.</p>
+        <hr>
+        <p class='lead center'>First step</p>
+        <p>The first step is actually deciding to do things, so I'll share one quick thing.  I wanted to, and did most of this
+        work with my 10 year old daughter helping me explore code and even taking over the keyboard a couple of times.
+        We explored artistic sensibilities of the project together too.</p>
+        <p class='lead center'>Finding a place to start</p>
+        <p>I wanted to take advantage of some of the things I've done recently with <a href='http://d3js.org/'>D3</a>,
+            but I couldn't really
+        justify using svg and the full d3 framework when I thought I might be able to do this in a simpler way.  With
+            <a href='http://www.amazon.com/echo'>Amazon's Echo</a>
+        just out, we had been playing with google now in chrome earlier in the day, so I know we could take advantage
+        of browser microphone input.  I just didn't know how.</p>
+        <p>We did some exploring and eventually found an example of how to use the microphone input on
+            <a href='http://apprentice.craic.com/tutorials/36'>Web Apprentice</a>.</p>
+        <p>It is a pretty good explanation of the code necessary to request access to the microphone and start using the input.</p>
+        <p>Take a minute to visit that site, check out the code and come back here when you are ready.</p>
+        <hr/>
+        <p>Here is some of the code we changed:</p>
+        <pre class='prettyprint'>
+  function drawTimeDomain() {
+    var minValue = 9999999;
+    var maxValue = 0;
+
+    for (var i = 0; i < amplitudeArray.length; i++) {
+        var value = amplitudeArray[i] / 256;
+        if(value > maxValue) {
+            maxValue = value;
+        } else if(value < minValue) {
+            minValue = value;
+        }
+    }
+
+    var y_lo = canvasHeight - (canvasHeight * minValue) - 1;
+    var y_hi = canvasHeight - (canvasHeight * maxValue) - 1;
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(column,y_lo, 1, y_hi - y_lo);
+
+    // loop around the canvas when we reach the end
+    column += 1;
+    if(column >= canvasWidth) {
+        column = 0;
+        clearCanvas();
+    }
+  }
+        </pre>
+        <p>What it does on the Web Apprentice tutorial is draw thin lines from the maximum amplitude (y_hi) to the
+        minimum amplitude (y_lo) scaled to the output canvas for each time slice of the microphone input resulting
+            in a pretty standard looking waveform analysis.  Pretty slick. </p>
+        <hr/>
+        <p class='lead center'>But we want circles!</p>
+        <p>Here is our version of the same method.</p>
+        <pre class='prettyprint'>
+function drawTimeDomain() {
+
+    ctx.fillStyle = config.randomColor();
+
+    var centerX = column + config.wobble();
+    var centerY = row + config.wobble();
+    var radius = config.radiusFromAmplitudeArray(amplitudeArray);
+
+    //draw a circle on the canvas grid including the wobble
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    ctx.fill();
+
+    // loop around the canvas when we reach the end
+    column += config.gridStep;
+    if (column >= config.canvasWidth) {
+        column = 30;
+        row += config.gridStep;
+        if (row >= config.canvasHeight) {
+            if (config.addScaled)
+                redraw();
+            column = redrawColumn;
+            row = redrawRow;
+        }
+
+    }
+}
+        </pre>
+        <p>You'll notice that it is quite a bit different, so we'll go through a couple of lines of code.</p>
+
+        <pre class='prettyprint'>
+            ctx.fillStyle = config.randomColor();
+        </pre>
+        <p>This generates a random color by using the <a href='http://www.paulirish.com/2009/random-hex-color-code-snippets/'>
+            power of the internets</a> and a config object setup at the top of the code which defines randomColor as:</p>
+        <pre class='prettyprint'>
+randomColor: function () {
+        return '#' + Math.floor(Math.random() * 16777215).toString(16);
+    }
+        </pre>
+        <p>Go read the post linked above for an explanation.</p>
+        <p>We continue to define the position for the center of the circles based on a loop around a grid of the
+        canvas that sets the column and row to position the next circle.  If we left it at that, we would end up
+        with perfectly overlapping centers for circles.  Here comes the artistry that is defined in the config object as:</p>
+        <pre class='prettyprint'>
+wobble: function () {
+        return Math.floor(Math.random() * config.wobbleFactor) - Math.floor(config.wobbleFactor / 2);
+    }
+        </pre>
+        <p>Randomness for the win!  We subtract half of the wobble factor to allow for negative numbers.
+            This allows the center of the circle to move up and down, left or right of the
+        grid position on the canvas.</p>
+        <p>The wobbleFactor is just a number.  We set it to 50 after playing with it for a while.</p>
+        <hr />
+        <p class='lead center'>What about the size of the circles you ask?</p>
+        <p>The code:</p>
+        <pre class='prettyprint'>
+var radius = config.radiusFromAmplitudeArray(amplitudeArray);
+        </pre>
+        <p>Takes care of that, so, don't worry about it.</p>
+        <hr/>
+        <p class='lead center'>I worry about the size enough for all of us.</p>
+        <p>This was actually one of the harder parts.  Initially my daughter and I just used a simple formula for the
+        radius which used the y_hi and scaled it to fit.  It was simple, elegant even....  And then, true confessions
+            of a dead-beat dad, I broke it by
+        trying to make it better.  I hadn't kicked up git yet, so I was out of luck to put it back.  So I had to
+        re-engineer it.  I'm trying to live that one down.</p>
+        <pre class='prettyprint'>
+radiusFromAmplitudeArray: function (amplitudeArray) {
+        var max = 0;
+        var min = 99999;
+        for (var i = 0; i < amplitudeArray.length; i++) {
+            max = max < amplitudeArray[i] ? amplitudeArray[i] : max;
+            min = min > amplitudeArray[i] ? amplitudeArray[i] : min;
+        }
+
+        var diff = Math.abs(max - min);
+        var radius = config.scaleRadius(diff);
+
+        //console.log ("min: " + min + " max: " + max + " diff: " + diff +  " radius: " + radius);
+        return Math.abs(radius);
+    }
+        </pre>
+        <p>Similar to the original code we get the max and the min for the amplitude.  We don't scale it by
+        dividing by 256 like the original code.  We get the difference between the two and then we scale it using
+        Math.  Notice the capital M.  It is important.  ScaleRadius is defined as:</p>
+        <pre class='prettyprint'>
+scaler: function () {
+        return config.circleRange() / config.amplitudeRange();
+    },
+scaleRadius: function (r) {
+        return config.scaler() * (r - config.amplitudeMin) + config.circleMin;
+    }
+        </pre>
+        <p>The circleRange is the difference between the maximum and minimum circle size we want and the
+        amplitudeRange is the minumum and maximum range we expect to get. </p>
+        <p>If you want to know how that formula works, we found a good
+            <a href='http://stackoverflow.com/questions/5294955/how-to-scale-down-a-range-of-numbers-with-a-known-min-and-max-value'>
+                Math StackOverflow</a>. Think back to how you learned to scale temperature scales of Celsius and Fahrenheit.
+            Same thing.
+        </p>
+        <hr/>
+        <p class='lead center'>A final note</p>
+        <p>I like working with my daughter on coding projects.  We've done a few together for a few years now.
+        One thing we like to do is to take all the numbers in a piece of unfamiliar code and tinker with them so we can
+        identify what they do when we run the code again.  We extend that to web colors too.  Once we figure them out
+        we create variables for them and move them up to a central portion of the code.  Recently, I've started making
+        config objects to hold the variables so you'll see that in our version of the code.  It also happens
+            to make the code easier to tinker with again.</p>
+        <p>Have fun with this. Star the github repo if you had fun.</p>
+
+        <hr />
+        <p class='lead center'>Wait, where do I go from here?</p>
+        <p>You read all the way to the end? You get to follow the same links as those folks who cheated,
+        but you get extra points!</p>
+        <img class="featurette-image img-responsive" src='images/tallymarks.png' alt="5 tally marks">
+        <p>You can visit either <a href='soundCanvasNoScaled.html'> the SoundCanvas</a>
+            or <a href='soundCanvasNoScaled.html'>the version without scaled thumbnails</a> and play with the demos. </p>
+        <p>You can also play with the code by forking this <a href='https://www.github.com/jjimenez/jjimenez.github.io'>github project</a>
+            or play with the <a href='http://jsfiddle.net/jose_jimenez/6w2sncvq/'>jsfiddle</a> in your browser.</p>
+
+    </div>
+
+</div><!-- /.container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="js/ie10-viewport-bug-workaround.js"></script>
+</body>
+</html>

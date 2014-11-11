@@ -1,0 +1,23 @@
+body {
+    padding-top: 50px;
+}
+.starter-template {
+    padding: 40px 15px;
+}
+
+.center {
+    text-align: center;
+}
+
+pre.prettyprint {
+    border: 1px solid #ccc;
+    margin-bottom: 0;
+    padding: 9.5px;
+}
+
+#canvas {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    background-color: white;
+}
