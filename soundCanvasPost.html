@@ -98,7 +98,7 @@
             or play with the <a href='http://jsfiddle.net/jose_jimenez/6w2sncvq/'>jsfiddle</a> in your browser.</p>
         <hr>
         <p class='lead center'>First step</p>
-        <p>The first step is actually deciding to do things, so I'll share one quick thing.  I wanted to, and did most of this
+        <p>The first step is actually deciding to do things, so I'll share one quick thing.  I wanted to do, and did, most of this
         work with my 10 year old daughter helping me explore code and even taking over the keyboard a couple of times.
         We explored artistic sensibilities of the project together too.</p>
         <p class='lead center'>Finding a place to start</p>
@@ -258,6 +258,60 @@ scaleRadius: function (r) {
         we create variables for them and move them up to a central portion of the code.  Recently, I've started making
         config objects to hold the variables so you'll see that in our version of the code.  It also happens
             to make the code easier to tinker with again.</p>
+        <p>Here is the complete config object for this piece of code:</p>
+        <pre class='prettyprint'>
+var config = {
+    sampleSize: 4096 * .25,       // number of samples to collect before analyzing
+    // decreasing this gives a faster sonogram, increasing it slows it down
+    gridStep: 50,          // canvas grid x and y steps
+    canvasWidth: 1000,      // needs to be in lockstep with css value at the time the canvas object is created
+
+    canvasHeight: 700,     //     otherwise the circles are scaled strangely
+    wobbleFactor: 50,      // moves the center of the circles within a random orbit around the grid points of the canvas
+    circleMax: 100,        // maximum size of a circle
+    circleMin: 1,          // minimum size of a circle
+    amplitudeMax: 300,     // what the maximum amplitude might be
+    amplitudeMin: 0.0,     // what the minimum amplitude might be
+    transparency: 0.75,   // the transparency of the circles
+    addScaled: false,     // copy the scaled image to the top corner for each cycle.
+    // functions to calculate various things below including the wobble of the positioning of the circles,
+    //  the radius of the circles
+    // and the color of the circles.
+    wobble: function () {
+        return Math.floor(Math.random() * config.wobbleFactor) - Math.floor(config.wobbleFactor / 2);
+    },
+    amplitudeRange: function () {
+        return config.amplitudeMax - config.amplitudeMin;
+    },
+    circleRange: function () {
+        return config.circleMax - config.circleMin;
+    },
+    scaler: function () {
+        return config.circleRange() / config.amplitudeRange();
+    },
+    radiusFromAmplitudeArray: function (amplitudeArray) {
+        var max = 0;
+        var min = 99999;
+        for (var i = 0; i < amplitudeArray.length; i++) {
+            max = max < amplitudeArray[i] ? amplitudeArray[i] : max;
+            min = min > amplitudeArray[i] ? amplitudeArray[i] : min;
+        }
+
+        var diff = Math.abs(max - min);
+        var radius = config.scaleRadius(diff);
+
+        //console.log ("min: " + min + " max: " + max + " diff: " + diff +  " radius: " + radius);
+        return Math.abs(radius);
+    },
+    scaleRadius: function (r) {
+        return config.scaler() * (r - config.amplitudeMin) + config.circleMin;
+    },
+    randomColor: function () {
+        return '#' + Math.floor(Math.random() * 16777215).toString(16);
+    }
+}
+        </pre>
+        <p>It isn't the prettiest piece of code, but it gets the job done.</p>
         <p>Have fun with this. Star the github repo if you had fun.</p>
 
         <hr />
