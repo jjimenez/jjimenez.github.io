@@ -160,8 +160,6 @@ function onError(e) {
 
 function drawTimeDomain() {
 
-    ctx.fillStyle = config.randomColor();
-
     var centerX = column + config.wobble();
     var centerY = row + config.wobble();
 
@@ -173,10 +171,8 @@ function drawTimeDomain() {
 
     var radius = config.radiusFromAmplitudeArray(amplitudeArray);
 
-    //draw a circle on the canvas grid including the wobble
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-    ctx.fill();
+    drawCircle(centerX, centerY, radius, config.randomColor());
+
 
     // loop around the canvas when we reach the end
     column += config.gridStep;
@@ -191,6 +187,16 @@ function drawTimeDomain() {
         }
 
     }
+}
+
+function drawCircle(centerX, centerY, radius, fillStyle) {
+    //draw a circle on the canvas grid including the wobble
+    var saveStyle = ctx.fillStyle;
+    ctx.fillStyle = fillStyle;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    ctx.fill();
+    ctx.fillStyle = saveStyle;
 }
 
 

@@ -1,0 +1,147 @@
+<!doctype html>
+<head>
+    <title>motion canvas</title>
+
+
+</head>
+<body>
+<video autoplay id="vid" style='display:none'></video>
+<canvas id="canvas" width="1000" height="700" style="display:none"></canvas>
+<canvas id="drawTarget" width="1000" height="700" style="border:1px solid #d3d3d3;"></canvas>
+<br>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/shared.js"></script>
+
+
+<script type="text/javascript">
+
+
+    var config = {
+        canvasWidth: 1000,      // needs to be in lockstep with css value at the time the canvas object is created
+        canvasHeight: 700,     //     otherwise the circles are scaled strangely
+        circleMax: 100,        // maximum size of a circle
+        circleMin: 0,          // minimum size of a circle
+        amplitudeMax: 12000,     // what the maximum amplitude might be
+        amplitudeMin: 500,     // what the minimum amplitude might be
+        transparency: 0.75,   // the transparency of the circles
+        useGrid: false,
+        randomX: function () {
+            return Math.floor(Math.random() * config.canvasWidth);
+        },
+        randomY: function () {
+            return Math.floor(Math.random() * config.canvasHeight);
+        },
+        amplitudeRange: function () {
+            return config.amplitudeMax - config.amplitudeMin;
+        },
+        circleRange: function () {
+            return config.circleMax - config.circleMin;
+        },
+        scaler: function () {
+            return config.circleRange() / config.amplitudeRange();
+        },
+        scaleRadius: function (r) {
+            return Math.abs(config.scaler() * (r - config.amplitudeMin) + config.circleMin);
+        },
+        randomColor: function () {
+            return '#' + Math.floor(Math.random() * 16777215).toString(16);
+        }
+    }
+
+    var video = document.querySelector("#vid");
+    var canvas = document.querySelector('#canvas');
+    var drawTarget = document.querySelector('#drawTarget');
+    var ctx2 = canvas.getContext('2d');
+    var ctx = drawTarget.getContext('2d');
+
+    $(document).ready(function () {
+        ctx = drawTarget.getContext('2d');
+        ctx.globalAlpha = config.transparency;
+
+    });
+    var localMediaStream = null;
+    //
+    var imageData = ctx2.getImageData(0, 0, canvas.width, canvas.height);
+    var prevImageData = ctx2.getImageData(0, 0, canvas.width, canvas.height);
+    //
+    //
+    var onCameraFail = function (e) {
+        console.log('Camera did not work.', e);
+    };
+
+
+    function getPixel2(imageData, prevImageData, x, y) {
+        //
+        var cr, cg, cb, ca, pr, pg, pb, pa, offset = x * 4 + y * 4 * imageData.width;
+        cr = imageData.data[offset];
+        cg = imageData.data[offset + 1];
+        cb = imageData.data[offset + 2];
+        ca = imageData.data[offset + 3];
+        //
+        pr = prevImageData.data[offset];
+        pg = prevImageData.data[offset + 1];
+        pb = prevImageData.data[offset + 2];
+        pa = prevImageData.data[offset + 3];
+        //
+        var diff = Math.abs(pr - cr) + Math.abs(pg - cg) + Math.abs(pb - cb);
+        var significant = 0;
+        if (diff > 20) {
+            significant = 1;
+        }
+        return significant;
+    }
+
+    function motionDetect() {
+        //
+        imageData = ctx2.getImageData(0, 0, canvas.width, canvas.height);
+        //
+        var size = 5;
+
+        var x, y;
+        var total = 0;
+        for (x = 0; x < canvas.width; x += size) {
+            for (y = 0; y < canvas.height; y += size) {
+                total += getPixel2(imageData, prevImageData, x, y);
+            }
+        }
+        // total should be a measure of how much change there was.
+        var x = config.randomX();
+        var y = config.randomY();
+        var radius = config.scaleRadius(total);
+        var fillStyle = config.randomColor();
+        drawCircle(x, y, radius, fillStyle);
+
+        // update previous frame image data
+        prevImageData = imageData;
+    }
+
+    function drawVideoAtCanvas(obj, context) {
+        window.setInterval(function () {
+            // draw video image to canvas
+            context.drawImage(obj, 0, 0);
+            motionDetect();
+            //
+        }, 60);
+        //
+
+    }
+
+
+    video.addEventListener('play', function () {
+        drawVideoAtCanvas(video, ctx2)
+    }, false);
+
+
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    window.URL = window.URL || window.webkitURL;
+    navigator.getUserMedia({video: true}, function (stream) {
+        video.src = window.URL.createObjectURL(stream);
+        localMediaStream = stream;
+    }, onCameraFail);
+
+</script>
+</body>
+
+</html>
