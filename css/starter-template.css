@@ -21,3 +21,8 @@ pre.prettyprint {
     display: block;
     background-color: white;
 }
+
+#scaledGroup {
+    margin-bottom: 5px;
+    width: 100px;
+}

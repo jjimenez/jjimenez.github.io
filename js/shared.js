@@ -40,6 +40,7 @@ var config = {
     amplitudeMax: 300,     // what the maximum amplitude might be
     amplitudeMin: 0.0,     // what the minimum amplitude might be
     transparency: 0.75,   // the transparency of the circles
+    useGrid: true,
     addScaled: false,     // copy the scaled image to the top corner for each cycle.
     // functions to calculate various things below including the wobble of the positioning of the circles,
     //  the radius of the circles
@@ -47,6 +48,8 @@ var config = {
     wobble: function () {
         return Math.floor(Math.random() * config.wobbleFactor) - Math.floor(config.wobbleFactor / 2);
     },
+    randomX: function() { return Math.floor(Math.random() *  config.canvasWidth); },
+    randomY: function() { return Math.floor(Math.random() *  config.canvasHeight); },
     amplitudeRange: function () {
         return config.amplitudeMax - config.amplitudeMin;
     },
@@ -161,6 +164,13 @@ function drawTimeDomain() {
 
     var centerX = column + config.wobble();
     var centerY = row + config.wobble();
+
+    if (!config.useGrid)
+    {
+       centerX = config.randomX();
+        centerY = config.randomY();
+    }
+
     var radius = config.radiusFromAmplitudeArray(amplitudeArray);
 
     //draw a circle on the canvas grid including the wobble

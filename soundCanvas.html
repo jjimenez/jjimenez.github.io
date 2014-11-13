@@ -32,7 +32,8 @@
         <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                            aria-expanded="false" aria-controls="navbar">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -50,8 +51,7 @@
                             <ul class="dropdown-menu" role="menu">
                                 <li class="dropdown-header">Sound Canvas</li>
                                 <li><a href="soundCanvasPost">Information</a></li>
-                                <li><a href="soundCanvas.html">with Scaling</a></li>
-                                <li><a href="soundCanvasNoScaled.html">without Scaling</a></li>
+                                <li><a href="soundCanvas.html">Demo</a></li>
                                 <li class="divider"></li>
                             </ul>
                         </li>
@@ -67,16 +67,48 @@
 <div class="container">
 
     <div class="starter-template">
+        <div class='container-fluid'>
+            <div class='row'>
+                <div class='col-md-3'>
+                    <p class='center'>Click Start and make some noise.</p>
 
-        <p class='lead center'>Click Start and make some noise.</p>
+                    <p id="controls" class='center-block center'>
+                        <button type="button" class='btn btn-success' id="start_button">Start</button>
+                        &nbsp; &nbsp;
+                        <button type="button" class='btn btn-danger' id="stop_button">Stop</button>
+                    </p>
+                </div>
+                <div class='col-md-3 col-md-offset-1'>
+                    <p class='center'>Add Scaled Versions</p>
 
-        <p id="controls" class='center'>
-            <button type="button" class='btn btn-default' id="start_button">Start</button>
-            &nbsp; &nbsp;
-            <button type="button" class='btn btn-default' id="stop_button">Stop</button>
-        </p>
+                    <div id='scaledGroup' class="center-block center">
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-primary">
+                                <input type="radio" name="scaledOptions" id="scaledOn" autocomplete="off"> On
+                            </label>
+                            <label class="btn btn-primary active">
+                                <input type="radio" name="scaledOptions" id="scaledOff" autocomplete="off" checked> Off
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class='col-md-3 col-md-offset-1'>
+                    <p class='center'>Use Grid for positioning</p>
+                    <div id='gridGroup' class="center-block center">
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-primary active">
+                                <input type="radio" name="gridOptions" id="gridOn" autocomplete="off" checked> On
+                            </label>
+                            <label class="btn btn-primary">
+                                <input type="radio" name="gridOptions" id="gridOff" autocomplete="off"> Off
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
         <canvas id="canvas" width="1000" height="700"></canvas>
-
     </div>
 
 </div>
@@ -88,7 +120,17 @@
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="js/ie10-viewport-bug-workaround.js"></script>
 <script type='text/javascript'>
- config.addScaled = true;
+    config.addScaled = false;
+    config.useGrid = true;
+    $(document).ready( function() {
+        $('#scaledGroup input').on('change', function() {
+            config.addScaled = $('#scaledGroup :checked').attr('id') === "scaledOn";
+        });
+        $('#gridGroup input').on('change', function() {
+            config.useGrid = $('#gridGroup :checked').attr('id') === "gridOn";
+        });
+    });
+
 </script>
 
 </body>
