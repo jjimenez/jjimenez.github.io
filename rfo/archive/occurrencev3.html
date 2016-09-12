@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html class="ocks-org do-not-copy" data-ember-extension="1">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Researcher Co-occurrence on routing forms</title>
+    <link type="text/css" rel="stylesheet" href="../styles/style.css">
+    <link type="text/css" rel="stylesheet" href="../styles/jquery.nouislider.min.css">
+    <link type="text/css" rel="stylesheet" href="../styles/jquery.nouislider.pips.min.css">
+    <style>
+
+
+        .background {
+            fill: #eee;
+        }
+
+        line {
+            stroke: #fff;
+        }
+
+        text.active {
+            fill: red;
+        }
+
+        .noUi-horizontal .noUi-handle {
+            width: 20px;
+        }
+    </style>
+    <script src="../javascript/d3.v2.min.js"></script>
+    <script src="../javascript/moment.min.js"></script>
+    <script src="../javascript/numeral.min.js"></script>
+    <script src="../javascript/jquery-1.11.1.min.js"></script>
+    <script src="../javascript/jquery.nouislider.all.min.js"></script>
+    <script src="../javascript/jquery.simplemodal.1.4.4.min.js"></script>
+    <script src="shared.js"></script>
+
+</head>
+<body>
+
+<h1><i>Routing Form</i> Co-occurrence</h1>
+
+<aside style="margin-top:80px;">
+    <p>Filter: <select id="college">
+    </select>
+
+    <p>Order: <select id="order">
+        <option value="name">by Name</option>
+        <option value="count">by Total Award Dollars</option>
+        <option value="college">by College</option>
+        <option value="department">by Department</option>
+    </select>
+
+    </p>
+    <p>First Collaborations Between PIs Occurring from:<span id='latest_date' style="font-weight: bold"></span>
+    </p>
+
+    <p>
+
+    <div id="slider"></div><br/>
+    <p>This matrix diagram visualizes co-occurrences in Routing Forms by PI.
+
+    </p>
+
+    <p>Each colored cell represents two PIs that appeared in the same routing form; darker cells indicate PIs that
+        co-occurred more frequently.
+
+    </p>
+
+    <p>Use the drop-down menu to reorder the matrix and explore the data.
+
+    </p>
+
+    <p>Built with <a href="http://d3js.org/">d3.js</a>.
+    </p>
+
+    <p>
+    <dl id="colors">
+    </dl>
+    </p>
+</aside>
+
+<script>
+
+
+
+college_selected = 'engineering';
+college_name = "Engineering";
+var selected_order = 'name';
+
+var margin = {top: 80, right: 0, bottom: 10, left: 80},
+        width = 1020,
+        height = 1020;
+
+var width_rangeBand = d3.scale.ordinal().rangeBands([0, width]);
+
+set_dates_by_index('#slider', '#latest_date',1,3);
+
+d3.json("data/only_all.json", function (all) {
+
+    map_colleges(all.colleges, '#colors', '#college');
+
+    setup(all.links,all.nodes);
+
+});
+
+function setup(raw_links, raw_nodes) {
+    map_links(raw_links, raw_nodes);
+    render();
+}
+
+function render() {
+    filter_links(college_name,first_link_dte, last_link_dte, false, 0);
+    d3.select("svg").remove();
+    var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .style("margin-left", -margin.left + "px")
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var matrix = [],
+            nodes = display_nodes,
+            n = nodes.length;
+
+    // Compute index per node.
+    nodes.forEach(function (node, i) {
+        node.index = i;
+        node.count = 0;
+        matrix[i] = d3.range(n).map(function (j) {
+            return {x: j, y: i, z: 0};
+        });
+    });
+
+    // Convert links to matrix; count character occurrences.
+     display_links.forEach(function (link) {
+        matrix[link.source.index][link.target.index].z += link.value;
+        matrix[link.target.index][link.source.index].z += link.value;
+        matrix[link.source.index][link.source.index].z += link.value;
+        matrix[link.target.index][link.target.index].z += link.value;
+        nodes[link.source.index].count += link.value;
+        nodes[link.target.index].count += link.value;
+    });
+
+    // Precompute the orders.
+    var orders = {
+        name: d3.range(n).sort(function (a, b) {
+            return d3.ascending(nodes[a].pi, nodes[b].pi);
+        }),
+        count: d3.range(n).sort(function (a, b) {
+            return nodes[b].count - nodes[a].count;
+        }),
+        college: d3.range(n).sort(function (a, b) {
+            return d3.ascending(nodes[b].pi_college, nodes[a].pi_college);
+        }),
+        department: d3.range(n).sort(function (a, b) {
+            return d3.ascending(nodes[b].pi_department, nodes[a].pi_department);
+        })
+    };
+
+    // The default sort order.
+    width_rangeBand.domain(orders[selected_order]);
+
+    svg.append("rect")
+            .attr("class", "background")
+            .attr("width", width)
+            .attr("height", height);
+
+    var row = svg.selectAll(".row")
+            .data(matrix)
+            .enter().append("g")
+            .attr("class", "row")
+            .attr("transform", function (d, i) {
+                return "translate(0," + width_rangeBand(i) + ")";
+            })
+            .each(row);
+
+    row.append("line")
+            .attr("x2", width);
+
+    row.append("rect")
+            .attr("x", -10)
+            .attr('class', 'name_rect')
+            .attr("y", (width_rangeBand.rangeBand() / 2) - 5)
+            .style("fill", function (d, i) {
+                return college_colors(nodes[i].pi_college);
+            })
+            .attr('height', 10)
+            .attr("width", 10);
+
+    row.append("text")
+            .attr("x", -12)
+            .attr("y", width_rangeBand.rangeBand() / 2)
+            .attr("dy", ".32em")
+            .attr("text-anchor", "end")
+            .attr('background-color', function (d, i) {
+            })
+            .text(function (d, i) {
+                return truncate_pi(nodes[i].pi);
+            });
+
+    var column = svg.selectAll(".column")
+            .data(matrix)
+            .enter().append("g")
+            .attr("class", "column")
+            .attr("transform", function (d, i) {
+                return "translate(" + width_rangeBand(i) + ")rotate(-90)";
+            });
+
+    column.append("line")
+            .attr("x1", -width);
+    column.append("rect")
+            .attr("x", 2)
+            .attr('class', 'name_rect')
+            .attr("y", (width_rangeBand.rangeBand() / 2) - 5)
+            .style("fill", function (d, i) {
+                return college_colors(nodes[i].pi_college);
+            })
+            .attr('height', 10)
+            .attr("width", 10);
+
+    column.append("text")
+            .attr("x", 12)
+            .attr("y", width_rangeBand.rangeBand() / 2)
+            .attr("dy", ".32em")
+            .attr("text-anchor", "start")
+            .text(function (d, i) {
+                return truncate_pi(nodes[i].pi);
+            });
+
+    function row(row) {
+        var cell = d3.select(this).selectAll(".cell")
+                .data(row.filter(function (d) {
+                    return d.z;
+                }))
+                .enter().append("rect")
+                .attr("class", "cell")
+                .attr("x", function (d) {
+                    return width_rangeBand(d.x);
+                })
+                .attr("width", width_rangeBand.rangeBand())
+                .attr("height", width_rangeBand.rangeBand())
+                .style("fill-opacity", function (d) {
+                    return opacity_scale(d.z);
+                })
+                .style("fill", function (d) {
+                    return nodes[d.x].pi_college == nodes[d.y].pi_college ? college_colors(nodes[d.x].pi_college) : null;
+                })
+                .on("mouseover", mouseover)
+                .on("mouseout", mouseout)
+                .on('click', function(d){$.modal(create_html_title(d, nodes));})
+                .append("title")
+                .text(function (d) {
+                    return create_title(d, nodes)
+                });
+    }
+
+    function mouseover(p) {
+        d3.selectAll(".row text").classed("active", function (d, i) {
+            return i == p.y;
+        });
+        d3.selectAll(".column text").classed("active", function (d, i) {
+            return i == p.x;
+        });
+    }
+
+    function mouseout() {
+        d3.selectAll("text").classed("active", false);
+    }
+
+    d3.select("#order").on("change", function () {
+        selected_order = this.value;
+        order(this.value);
+    });
+
+    function order(value) {
+        width_rangeBand.domain(orders[value]);
+
+        var t = svg.transition().duration(2500);
+
+        t.selectAll(".row")
+                .delay(function (d, i) {
+                    return width_rangeBand(i) * 4;
+                })
+                .attr("transform", function (d, i) {
+                    return "translate(0," + width_rangeBand(i) + ")";
+                })
+                .selectAll(".cell")
+                .delay(function (d) {
+                    return width_rangeBand(d.x) * 4;
+                })
+                .attr("x", function (d) {
+                    return width_rangeBand(d.x);
+                });
+
+        t.selectAll(".column")
+                .delay(function (d, i) {
+                    return width_rangeBand(i) * 4;
+                })
+                .attr("transform", function (d, i) {
+                    return "translate(" + width_rangeBand(i) + ")rotate(-90)";
+                });
+    }
+}
+
+</script>
+
+
+<script type="text/javascript" src="chrome-extension://bmdblncegkenkacieihfhpjfppoconhi/in-page-script.js"></script>
+</body>
+</html>

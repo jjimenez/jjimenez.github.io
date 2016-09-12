@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/nouislider/distribute/jquery.nouislider.min.css" />
+    <link rel="stylesheet" href="bower_components/nouislider/distribute/jquery.nouislider.pips.min.css" />
+    <link rel="stylesheet" href="bower_components/qtip2/jquery.qtip.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap/docs/assets/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap-css/css/bootstrap.min.css" />
+    <!-- endbower -->
+
+    <!-- bower:js -->
+    <script src="bower_components/modernizr/modernizr.js"></script>
+    <script src="bower_components/jquery/jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/numeral/numeral.js"></script>
+    <script src="bower_components/nouislider/distribute/jquery.nouislider.all.min.js"></script>
+    <script src="bower_components/ericmmartin.simplemodal/src/jquery.simplemodal.js"></script>
+    <script src="bower_components/eventEmitter/EventEmitter.js"></script>
+    <script src="bower_components/eventie/eventie.js"></script>
+    <script src="bower_components/imagesloaded/imagesloaded.js"></script>
+    <script src="bower_components/qtip2/jquery.qtip.js"></script>
+    <script src="bower_components/bootstrap/docs/assets/js/bootstrap.js"></script>
+    <script src="bower_components/d3/d3.js"></script>
+    <script src="bower_components/dimple/dist/dimple.v2.1.6.min.js"></script>
+    <script src="bower_components/bootstrap-css/js/bootstrap.min.js"></script>
+    <!-- endbower -->
+
+    <link type="text/css" rel="stylesheet" href="styles/style.css">
+    <link type="text/css" rel="stylesheet" href="styles/jquery-ui.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jquery-ui.structure.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jquery-ui.theme.min.css">
+
+    <script src="javascript/sharedv2.js"></script>
+    <style>
+
+        .node {
+            stroke: #fff;
+            stroke-width: 1.5px;
+        }
+
+        .link {
+            stroke: #999;
+            stroke-opacity: .6;
+        }
+
+    </style>
+</head>
+<body>
+<h1><i>Routing Form</i> Co-occurrence</h1>
+<aside style="margin-top:80px;">
+
+    <div id="filters">
+        <label for="autofilter">Filter</label>
+        <input id="autofilter">
+        <div id="selected_filters">
+        </div>
+    </div>
+
+    <p>First Collaborations Between PIs Occurring from:<span id='latest_date'>Jan 1, 2011</span>
+    </p>
+
+    <p>
+
+    <div id="slider" class="noUi-extended"></div>
+    <br/>
+    Add and remove PIs when filtering: <input id='add_remove' name='add_remove' type="checkbox" checked>
+    </p>
+
+
+    <p>This force directed graph visualizes co-occurrences in Routing Forms by PI.
+
+    </p>
+
+    <p>Each colored dot represents a PI. Bolder links indicate the dollar value of the collaboration.
+        Hover over dots to see more information about PIs.
+        Hover over links to see the value of the collaboration)
+
+
+    </p>
+
+    <p>Built with <a href="http://d3js.org/">d3.js</a>.
+    </p>
+
+    <p>
+    <dl id="colors">
+    </dl>
+    </p>
+</aside>
+<script>
+
+
+    var width = 1080,
+            height = 800;
+
+    // TODO: 1) change to use object notation i.e.  var config = { color_by: "pi_college", value_by: "value"....
+    // TODO: 3) change to use new file "combined_..."
+    // TODO: 3.1)        college is now org
+    //                   value is now rf_award_value
+    //                   pi_department is now department
+    //                   rank is user_id
+    // TODO: 4) change filters so they are an array i.e.  filters: [ { name: "college", field: "Org", prefix: "College: "}, { name: "department", ...
+    // TODO: 4.1)    need to change other methods to use filters appropriately
+    // TODO: 5) do the same for bundle, occurrence html files.  combine into a single javascript file if appropriate.
+
+    // TODO: Switch primary & secondary filters to use a single filter
+    // config.filters = ["pi_college","pi_department",'center','terms']
+    //   Probably swap these out for some type of object
+    //   so we can have a key/val pairing and possibly a matcher
+    //   function.
+
+    //      primary_filter: "pi_college",
+    //      primary_filter_prefix: 'College: ',
+    //      secondary_filter: "pi_department",
+    //      secondary_filter_prefix: 'Department: ',
+    var config = {
+      color_by: "pi_college",
+      value_by: "value",
+      node_id: "rank",
+
+      primary_filter_input: $('#autofilter'),
+
+      filters:[
+        {
+          name: "primary",
+          prefix: "College: ",
+          selected: ['All'],
+          button_class: "primary_button",
+          field: "pi_college"
+        },
+        {
+          name: "secondary",
+          prefix: "Department: ",
+          selected: [],
+          button_class: "selected_button",
+          field: "pi_department"
+        }
+      ],
+
+      selected_filters_container: $('#selected_filters'),
+      date_fields: ["earliest_collaboration"],
+      filter_date_field: "earliest_collaboration",
+      node_tip_attribute: 'data-title',
+      link_tip_attribute: 'data-title',
+      node_tip_html: node_tip_content,
+      node_tip_method: node_tips,
+      link_tip_html: link_tip_content,
+      link_tip_method: link_tips
+    };
+
+    function node_tip_content(d) {
+        var content = [];
+        content.push("Investigator: <span class='bold'>" + d.pi + "</span>");
+        content.push("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + "College: <span class='bold'>" + d.pi_college + "</span>");
+        content.push("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + "Department: <span class='bold'>" + d.pi_department + "</span>");
+        return encodeURI(content.join("<br />"));
+    }
+
+    function node_tips() {
+        set_tips('.node', config.node_tip_attribute);
+    }
+    function link_tips() {
+        set_tips('.link', config.link_tip_attribute);
+    }
+
+    function link_tip_content(d) {
+        source_content = config.node_tip_html(d.source);
+        target_content = config.node_tip_html(d.target);
+
+        var content = [];
+        content.push("<br/><br/>Total Awards: <span class='bold'>" + numeral(d[config.value_by] == 1 ? 0 : d[config.value_by]).format('$0,0') + "</span>");
+        return source_content + encodeURI("<br/><br/>") + target_content + encodeURI(content.join("<br />"));
+    }
+
+    function set_tips(selector, content_attribute) {
+        $(selector).each(function () {
+            $(this).qtip({
+                content: {
+                    text: decodeURI($(this).attr(content_attribute))
+                },
+                position: {
+                    my: 'top center',
+                    at: 'bottom center'
+                }, style: {
+                    classes: 'qtip-light node-tip',
+                    tip: {
+                        corner: true,
+                        height: 24
+                    }
+                },
+                hide: {
+                    fixed: true,
+                    delay: 100
+                }
+            });
+        });
+    }
+
+    primary_filters_selected = ['Engineering'];
+    secondary_filters_selected = [];
+
+    set_dates_by_index('#slider', '#latest_date', 1, 3);
+
+    var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+    //TODO:  2) move file name to configuration
+
+    d3.json("data/only_all.json", function (all) {
+        all_primary_filter_values = d3.set(all.nodes.map(function (node) {
+            return node[find_filter("primary").field];
+        })).values().sort();
+        all_primary_filter_values.unshift("All");
+        all_primary_filter_values.obj = get_obj("primary");
+
+        all_secondary_filter_values = d3.set(all.nodes.map(function (node) {
+            return node[find_filter("secondary").field];
+        })).values().sort();
+        all_secondary_filter_values.unshift("All");
+        all_secondary_filter_values.obj = get_obj("secondary");
+
+        //TODO: Duplicated in bundlev4.html
+        set_selected_colors(
+          d3.set(
+            all.nodes.map(function (node) {
+              return node[find_filter("primary").field];
+            })
+          ).values().sort()
+        , '#colors');
+        map_filters([all_primary_filter_values, all_secondary_filter_values]);
+        all_values = all.links.map(function (node) { return parseInt(node[config.value_by]); });
+        all_values = all_values.sort(function(a, b){return a-b});
+        set_domains_by_value(all_values[0], all_values[all_values.length - 1]);
+        setup(all.links, all.nodes);
+    });
+
+    var force = d3.layout.force()
+            .charge(-10)
+            .linkDistance(25)
+            .size([width, height])
+            .nodes(display_nodes)
+            .links(display_links)
+            .on("tick", tick);
+
+    var link = svg.selectAll('.link'),
+            node = svg.selectAll('.node');
+
+
+    function setup(raw_links, raw_nodes) {
+        all_nodes = type_nodes(raw_nodes);
+        map_links(raw_links, all_nodes);
+        render();
+    }
+
+    function draw_nodes() {
+        node = node.data(force.nodes(), function (d) {
+            return d[config.node_id];
+        });
+        node.enter().append("circle")
+                .attr("class", function (d) {
+                    return "node node_" + d[config.node_id]
+                })
+                .attr("r", 6)
+                .style("fill", function (d) {
+                    return primary_colors(d[config.color_by]);
+                })
+                .attr(config.node_tip_attribute, config.node_tip_html)
+                .call(force.drag);
+        node.exit().remove();
+
+        config.node_tip_method();
+
+    }
+
+    function draw_links() {
+        link = svg.selectAll('.link');
+        link = link.data(force.links(), function (d) {
+            return d.source[config.node_id] + "-" + d.target[config.node_id];
+        });
+        link.enter().append("line")
+                .attr("class", "link")
+                .style("stroke-width", function (d) {
+                    return link_width_scale(d[config.value_by]);
+                })
+                .attr(config.link_tip_attribute, config.link_tip_html);
+        link.exit().remove();
+        config.link_tip_method();
+    }
+
+    function render() {
+
+        filter_links(find_filter("primary").selected, first_link_dte, last_link_dte, !d3.select('#add_remove').property('checked'), 0, find_filter("secondary").selected);
+
+        force.charge(charge_scale(display_nodes.length));
+        force.linkDistance(link_scale(display_nodes.length));
+        force.nodes(display_nodes);
+        force.links(display_links);
+        draw_nodes();
+        draw_links();
+        force.start();
+    }
+
+    d3.select("input[type=checkbox]").on("change", function () {
+        render();
+    });
+
+
+    function tick(e) {
+        link.attr("x1", function (d) {
+            var deltaX = d.target.x - d.source.x,
+                    deltaY = d.target.y - d.source.y,
+                    dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
+                    normX = deltaX / dist,
+                    normY = deltaY / dist,
+                    sourcePadding = d.left ? 11 : 6,
+                    targetPadding = d.right ? 11 : 6,
+                    sourceX = d.source.x + (sourcePadding * normX),
+                    sourceY = d.source.y + (sourcePadding * normY),
+                    targetX = d.target.x - (targetPadding * normX),
+                    targetY = d.target.y - (targetPadding * normY);
+            return sourceX;
+        })
+                .attr("y1", function (d) {
+                    var deltaX = d.target.x - d.source.x,
+                            deltaY = d.target.y - d.source.y,
+                            dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
+                            normX = deltaX / dist,
+                            normY = deltaY / dist,
+                            sourcePadding = d.left ? 11 : 6,
+                            targetPadding = d.right ? 11 : 6,
+                            sourceX = d.source.x + (sourcePadding * normX),
+                            sourceY = d.source.y + (sourcePadding * normY),
+                            targetX = d.target.x - (targetPadding * normX),
+                            targetY = d.target.y - (targetPadding * normY);
+                    return sourceY;
+                })
+                .attr("x2", function (d) {
+                    var deltaX = d.target.x - d.source.x,
+                            deltaY = d.target.y - d.source.y,
+                            dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
+                            normX = deltaX / dist,
+                            normY = deltaY / dist,
+                            sourcePadding = d.left ? 11 : 6,
+                            targetPadding = d.right ? 11 : 6,
+                            sourceX = d.source.x + (sourcePadding * normX),
+                            sourceY = d.source.y + (sourcePadding * normY),
+                            targetX = d.target.x - (targetPadding * normX),
+                            targetY = d.target.y - (targetPadding * normY);
+                    return targetX;
+                })
+                .attr("y2", function (d) {
+                    var deltaX = d.target.x - d.source.x,
+                            deltaY = d.target.y - d.source.y,
+                            dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
+                            normX = deltaX / dist,
+                            normY = deltaY / dist,
+                            sourcePadding = d.left ? 11 : 6,
+                            targetPadding = d.right ? 11 : 6,
+                            sourceX = d.source.x + (sourcePadding * normX),
+                            sourceY = d.source.y + (sourcePadding * normY),
+                            targetX = d.target.x - (targetPadding * normX),
+                            targetY = d.target.y - (targetPadding * normY);
+                    return targetY;
+                });
+
+        node.attr("cx", function (d) {
+            return d.x;
+        })
+                .attr("cy", function (d) {
+                    return d.y;
+                });
+    }
+
+</script>
+</body>
+</html>
+

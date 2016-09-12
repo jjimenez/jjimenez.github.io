@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!--<meta http-equiv="content-type" content="text/html; charset=UTF8">-->
+
+    <link type="text/css" rel="stylesheet" href="styles/style.css">
+    <link type="text/css" rel="stylesheet" href="styles/jquery-ui.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jquery-ui.structure.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jquery-ui.theme.min.css">
+
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/nouislider/distribute/jquery.nouislider.min.css" />
+    <link rel="stylesheet" href="bower_components/nouislider/distribute/jquery.nouislider.pips.min.css" />
+    <link rel="stylesheet" href="bower_components/qtip2/jquery.qtip.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap/docs/assets/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap-css/css/bootstrap.min.css" />
+    <!-- endbower -->
+
+
+    <link type="text/css" rel="stylesheet" href="styles/bundle_style.css">
+
+    <!-- bower:js -->
+    <script src="bower_components/modernizr/modernizr.js"></script>
+    <script src="bower_components/jquery/jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/numeral/numeral.js"></script>
+    <script src="bower_components/nouislider/distribute/jquery.nouislider.all.min.js"></script>
+    <script src="bower_components/ericmmartin.simplemodal/src/jquery.simplemodal.js"></script>
+    <script src="bower_components/eventEmitter/EventEmitter.js"></script>
+    <script src="bower_components/eventie/eventie.js"></script>
+    <script src="bower_components/imagesloaded/imagesloaded.js"></script>
+    <script src="bower_components/qtip2/jquery.qtip.js"></script>
+    <script src="bower_components/bootstrap/docs/assets/js/bootstrap.js"></script>
+    <script src="bower_components/d3/d3.js"></script>
+    <script src="bower_components/dimple/dist/dimple.v2.1.6.min.js"></script>
+    <script src="bower_components/bootstrap-css/js/bootstrap.min.js"></script>
+    <!-- endbower -->
+
+    <script type="text/javascript" src="javascript/packagesv2.js"></script>
+    <script src="javascript/sharedv2.js"></script>
+    <style type="text/css">
+
+        path.arc {
+            cursor: move;
+            fill: #fff;
+        }
+
+        /* This style affects the names displaying around the outside of the chord diagram */
+        .node {
+            font-size: 15px;
+        }
+
+        .node:hover {
+            fill: #1f77b4;
+        }
+
+        .link {
+            fill: none;
+            stroke: #1f77b4;
+            stroke-width: 3px;
+            stroke-opacity: .4;
+            pointer-events: none;
+        }
+
+        .link.cross_department {
+            fill: none;
+            stroke: #1f77b4;
+            stroke-opacity: .99;
+            /*stroke-dasharray: 10,5;*/
+            pointer-events: none;
+        }
+
+        .link.cross_org {
+            fill: none;
+            stroke: #3CBA26;
+            stroke-opacity: .4;
+            pointer-events: none;
+        }
+
+        .link.source, .link.target {
+            stroke-opacity: 1;
+            stroke-width: 2px;
+        }
+
+        .node.target {
+            fill: #d62728 !important;
+        }
+
+        .link.source {
+            stroke: #d62728;
+        }
+
+        .node.source {
+            fill: #2ca02c;
+        }
+
+        .link.target {
+            stroke: #2ca02c;
+        }
+        #data_table{
+            top: 800px;
+            position:absolute;
+        }
+
+
+    </style>
+</head>
+<body>
+<h1 style="position:absolute; right:0px;"><i>Routing Form</i><br/>Co-occurrence</h1>
+<aside style="margin-top:40px;">
+
+    <div id="filters">
+        <label for="pi_filter">Filter By PI</label>
+        <input id="pi_filter">
+        <div id="selected_pis">
+
+        </div>
+        <label for="autofilter">Filter</label>
+        <input id="autofilter">
+
+        <div id="selected_filters">
+        </div>
+    </div>
+
+    <p>First Collaborations Between PIs Occurring from:<span id='latest_date'>Jan 1, 2011</span></p>
+
+
+    <div id="slider" class="noUi-extended"></div>
+
+
+    <p>This chord diagram visualizes co-occurrences in Routing Forms by PI.</p>
+
+    <p>Each link represents two investigators that appeared in the same routing form. Hover on investigator to highlight
+        links.
+        Diagram can be rotated. Colored arcs represent colleges.
+        Red links are those where the selected investigator is not the primary. Green links are those where the selected
+        investigator is the primary.
+    </p>
+
+    <p>Built with <a href="http://d3js.org/">d3.js</a>.</p>
+
+
+    <ul id="colors">
+    </ul>
+</aside>
+<div id="svg_content">
+
+</div>
+
+<div id="data_table">
+
+</div>
+
+<script type="text/javascript">
+
+var w = 1250,
+        h = 800,
+        rx = w / 2,
+        ry = h / 2,
+        m0,
+        rotate = 0;
+
+//  primary_filters_selected: ['All'],
+//  secondary_filter_prefix: 'Department: ',
+//  secondary_filters_selected: [],
+//  hierarchy1:
+//  primary_filter: "pi_college",
+//  primary_filter_prefix: 'College: ',
+//  secondary_filter: "pi_department",
+
+var config = {
+  color_by: "pi_college",
+  value_by: "value",
+  node_id: "rank",
+  filters:[
+    {
+      name: "primary",
+      prefix: "College: ",
+      selected: ['All'],
+      button_class: "primary_button",
+      field: "pi_college"
+    },
+    {
+      name: "secondary",
+      prefix: "Department: ",
+      selected: [],
+      button_class: "selected_button",
+      field: "pi_department"
+    }
+  ],
+  date_fields: ["earliest_collaboration"],
+  filter_date_field: "earliest_collaboration",
+  selected_filters_container: $('#selected_filters'),
+  primary_filter_input: $('#autofilter'),
+  node_label: 'pi'
+};
+
+var pi_search = '';
+var all_pis = [];
+
+
+//filters: {
+//          "primary": {
+//              field: "Org",
+//              prefix: "College: ",
+//              selected: [],
+//              button_class: "primary_button"
+//          },
+//          "secondary": {
+//              field: "department",
+//              prefix: "Department: ",
+//              selected: [],
+//              button_style: "secondary_button",
+//          } 
+//        },
+
+
+// Smaller chord_radius results in a larger chord diagram
+var chord_radius = 75;
+var cluster = d3.layout.cluster()
+        .size([360, ry - chord_radius])
+        .sort(function (a, b) {
+            return d3.ascending(a.key, b.key);
+        });
+
+var bundle = d3.layout.bundle();
+
+var line = d3.svg.line.radial()
+        .interpolate("bundle")
+        .tension(.85)
+        .radius(function (d) {
+            return d.y;
+        })
+        .angle(function (d) {
+            return d.x / 180 * Math.PI;
+        });
+
+// Chrome 15 bug: <http://code.google.com/p/chromium/issues/detail?id=98951>
+var div = d3.select("#svg_content").insert("div", "h2")
+        .style("top", "-80px")
+        .style("left", "-160px")
+        .style("width", w + "px")
+        .style("height", w + "px")
+        .style("position", "absolute")
+        .style("-webkit-backface-visibility", "hidden");
+
+
+
+set_dates_by_index('#slider', '#latest_date', 0, 2);
+
+var svg;
+
+d3.json("data/only_all.json", function (all) {
+    all_primary_filter_values = d3.set(
+      all.nodes.map(function (node) {
+        return node[find_filter("primary").field];
+      })
+    ).values().sort();
+
+    all_primary_filter_values.unshift("All");
+    all_primary_filter_values.obj = get_obj("primary");
+
+    all_secondary_filter_values = d3.set(all.nodes.map(function (node) {
+        return node[find_filter("secondary").field];
+    })).values().sort();
+    all_secondary_filter_values.unshift("All");
+    all_secondary_filter_values.obj = get_obj("secondary");
+
+    all_pis = d3.set (
+            all.nodes.map(function (node) {
+                return node['pi'];
+            })
+    ).values().sort();
+
+    $('#pi_filter').autocomplete({
+        source: all_pis, select: set_pi
+    });
+
+    set_selected_colors(
+      d3.set(
+        all.nodes.map(function (node) {
+          return node[find_filter("primary").field];
+        })
+      ).values().sort()
+    , '#colors');
+
+    map_filters([all_primary_filter_values, all_secondary_filter_values]);
+    all_values = all.links.map(function (node) {
+        return parseInt(node[config.value_by]);
+    });
+
+    all_values = all_values.sort(function (a, b) {
+        return a - b
+    });
+    set_domains_by_value(all_values[0], all_values[all_values.length - 1]);
+    setup(all.links, all.nodes);
+});
+
+function set_pi(event, ui) {
+    allow_time_animation = false;
+    pi_search = ui.item.value;
+    render();
+    $('.node').show();
+}
+
+function setup(raw_links, raw_nodes) {
+    all_nodes = raw_nodes;
+    map_links(raw_links, all_nodes);
+    render();
+    animate_time('#slider', '#latest_date', 2, 3000); //
+}
+
+function render() {
+    filter_links(find_filter("primary").selected, first_link_dte, last_link_dte, false, 0, find_filter("secondary").selected, false, pi_search);
+
+    d3.select("svg").remove();
+    if (!display_nodes[0] || !display_links[0]) return;
+
+    clustered_nodes = cluster.nodes(packages.root(display_nodes));
+    display_links = packages.map_ancestry(display_nodes, clustered_nodes, display_links);
+    make_stats(display_links);
+    splines = bundle(display_links);
+
+    svg = div.append("svg:svg")
+            .attr("width", w)
+            .attr("height", h)
+            .append("svg:g")
+            .attr("transform", "translate(" + ((chord_radius/2) + rx) + "," + ((chord_radius/2) + ry) + ") scale(0.85)");
+    svg.append("svg:path")
+            .attr("class", "arc")
+            .attr("d", d3.svg.arc().outerRadius(ry - chord_radius).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
+            .on("mousedown", mousedown);
+
+    var path = svg.selectAll("path.link")
+            .data(display_links)
+            .enter().append("svg:path")
+            .attr("class", function (d) {
+                if(d.source.pi_college === d.target.pi_college){
+                    if (d.source.pi_department === d.target.pi_department){
+                        classes = "link source-" + classify_pi(d.source.key) + " target-" + classify_pi(d.target.key);
+                    } else {
+                        classes = "link cross_department source-" + classify_pi(d.source.key) + " target-" + classify_pi(d.target.key);
+                    }
+                }else{
+                  classes = "link cross_org source-" + classify_pi(d.source.key) + " target-" + classify_pi(d.target.key);
+                }
+                return classes;
+            })
+            .attr("d", function (d, i) {
+                return line(splines[i]);
+            });
+           // .attr('stroke-width', function (d) {return link_width_scale(d.value);});
+
+    var groupData = svg.selectAll("g.group")
+                .data(clustered_nodes.filter(function(d) { return (d.key && d.key.match(find_filter("primary").prefix) && d.children); }))
+                .enter().append("group")
+                .attr("class", "group");
+
+    var groupArc = d3.svg.arc()
+            .innerRadius(ry - (chord_radius + 0))
+            .outerRadius(ry - (chord_radius - 23))
+            .startAngle(function(d) {
+              return (findStartAngle(d.__data__.children)-0.2) * Math.PI / 180;
+            })
+            .endAngle(function(d) {return (findEndAngle(d.__data__.children)+0.2) * Math.PI / 180;});
+
+
+    var arc = svg.selectAll("g.arc")
+            .data(groupData[0])
+            .enter()
+            .append("g")
+              .attr("class", "arc")
+              .append("svg:path")
+                .attr("d", groupArc)
+                .attr('id',function(d) {
+                  return classify_pi(d.__data__.key.replace(find_filter("primary").prefix,''));
+                } )
+                .attr("class", "groupArc" )
+                .style("fill", function(d) {
+                    return primary_colors(d.__data__.key.replace(find_filter("primary").prefix, ''))
+                })
+                .style("fill-opacity", 0.8);
+
+    <!-- Begin: This displays the departments around the circle -->
+    var arcs = svg.selectAll("g.arc");
+
+    arcs.append("text")
+      .attr("transform", function(d){
+                // Calculates the college label offset from arcs
+                var ctr = groupArc.centroid(d),
+                        labelr = ry - chord_radius + 40,
+                        x = ctr[0],
+                        y = ctr[1],
+                // pythagorean theorem for hypotenuse
+                        h = Math.sqrt(x * x + y * y);
+                //if (Math.abs(ctr[0]) < 100) labelr += 15;
+        return "translate(" + (x/h * labelr)  + "," + (y/h * labelr) + ")";
+      })
+      .attr("text-anchor", function(d) {
+                var ctr = groupArc.centroid(d);
+                return ctr[0] > 0 ? "start" : "end";
+            })
+      .style("font", "bold 14px Arial")
+      .text(function(d){
+                var ctr = groupArc.centroid(d);
+        return d.__data__.name.replace(config.primary_filter_prefix, '');
+                return '';
+      });
+    <!-- End: This displays the departments around the circle -->
+
+    svg.selectAll("g.node")
+            .data(clustered_nodes.filter(function (n) {
+                return !n.children;
+            }))
+            .enter().append("svg:g")
+            .attr("class", function (d) { return "node"; })
+            .attr("id", function (d) {
+                return "node-" + classify_pi(d.key);
+            })
+            .attr("transform", function (d) {
+                return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")";
+            })
+            .append("svg:text")
+            .attr("dx", function (d) {
+                return d.x < 180 ? 27 : -27;
+            })
+            .attr("dy", ".31em")
+            .attr("text-anchor", function (d) {
+                return d.x < 180 ? "start" : "end";
+            })
+            .attr("transform", function (d) {
+                return d.x < 180 ? null : "rotate(180)";
+            })
+            .text(function (d) {
+                return truncate_pi(d.key);
+            })
+            .on("mouseover", mouseover)
+            .on("mouseout", mouseout);
+
+}
+
+//d3.select(window)
+//        .on("mousemove", mousemove)
+//        .on("mouseup", mouseup);
+
+function mouse(e) {
+    return [e.pageX - rx, e.pageY - ry];
+}
+
+function mousedown() {
+    m0 = mouse(d3.event);
+    d3.event.preventDefault();
+}
+
+function mousemove() {
+    if (m0) {
+        var m1 = mouse(d3.event),
+                dm = Math.atan2(cross(m0, m1), dot(m0, m1)) * 180 / Math.PI;
+        div.style("-webkit-transform", "translateY(" + (ry - rx) + "px)rotateZ(" + dm + "deg)translateY(" + (rx - ry) + "px)");
+    }
+}
+
+function mouseup() {
+    if (m0) {
+        var m1 = mouse(d3.event),
+                dm = Math.atan2(cross(m0, m1), dot(m0, m1)) * 180 / Math.PI;
+
+        rotate += dm;
+        if (rotate > 360) rotate -= 360;
+        else if (rotate < 0) rotate += 360;
+        m0 = null;
+
+        div.style("-webkit-transform", null);
+
+        svg
+                .attr("transform", "translate(" + rx + "," + ry + ")rotate(" + rotate + ") ")
+                .selectAll("g.node text")
+                .attr("dx", function (d) {
+                    return (d.x + rotate) % 360 < 180 ? 8 : -8;
+                })
+                .attr("text-anchor", function (d) {
+                    return (d.x + rotate) % 360 < 180 ? "start" : "end";
+                })
+                .attr("transform", function (d) {
+                    return (d.x + rotate) % 360 < 180 ? null : "rotate(180)";
+                });
+    }
+}
+
+function fade(opacity) {
+    svg.selectAll('g.node').style('opacity', opacity);
+    svg.selectAll("path.link")
+            .style('opacity', opacity)
+            .each(fadeNode(opacity));
+}
+
+function fadeNode(opacity) {
+    return function (d) {
+        target_node = "#node-" + classify_pi(d.target.key);
+        source_node = "#node-" + classify_pi(d.source.key);
+        svg.select(source_node).style("opacity", opacity);
+        svg.select(target_node).style("opacity", opacity);
+    };
+}
+
+function mouseover(d) {
+    fade(0.1);
+    svg.select("#node-" + classify_pi(d.key)).style("opacity", 1);
+    svg.selectAll("path.link.target-" + classify_pi(d.key))
+            .style('opacity', 1)
+            .classed("target", true)
+            .each(updateNodes("source", true));
+
+    svg.selectAll("path.link.source-" + classify_pi(d.key))
+            .style('opacity', 1)
+            .classed("source", true)
+            .each(updateNodes("target", true));
+}
+
+function mouseout(d) {
+    fade(1);
+    svg.selectAll('g.node')
+            .style('opacity', 1);
+    svg.selectAll("path.link.source-" + classify_pi(d.key))
+            .classed("source", false)
+            .each(updateNodes("target", false));
+
+    svg.selectAll("path.link.target-" + classify_pi(d.key))
+            .classed("target", false)
+            .each(updateNodes("source", false));
+}
+
+function updateNodes(name, value) {
+    return function (d) {
+        if (value) this.parentNode.appendChild(this);
+        svg.select("#node-" + classify_pi(d[name].key)).classed(name, value).style('opacity', 1);
+    };
+}
+
+function cross(a, b) {
+    return a[0] * b[1] - a[1] * b[0];
+}
+
+function dot(a, b) {
+    return a[0] * b[0] + a[1] * b[1];
+}
+
+function findStartAngle(children) {
+    var min = children[0].x;
+    children.forEach(function(d) {
+        if (d.children){
+            d.children.forEach(function (e) {
+                if (e.x < min)
+                    min = e.x;
+            })
+        } else {
+            if (d.x < min)
+                min = d.x;
+        }
+    });
+    return min;
+}
+
+function findEndAngle(children) {
+    var max = children[0].x;
+    children.forEach(function(d) {
+        if (d.children) {
+            d.children.forEach(function (e) {
+                if (e.x > max)
+                    max = e.x;
+            })
+        } else {
+            if (d.x > max)
+                max = d.x;
+        }
+    });
+    return max;
+
+}
+    var stats = {
+        "total_collaborations": 0,
+        "in_department": 0,
+        "cross_department_in_org": 0,
+        "cross_org": 0
+    };
+    var $data_table_div = $('div#data_table');
+
+    function make_stats(links){
+        stats.total_collaborations = 0;
+        stats.in_department = 0;
+        stats.cross_department_in_org = 0;
+        stats.cross_org = 0;
+        links.forEach(function(d) {
+            if(d.source.pi_college === d.target.pi_college){
+                if (d.source.pi_department === d.target.pi_department){
+                    stats.in_department += 1;
+                } else {
+                    stats.cross_department_in_org += 1;
+                }
+            }else{
+                stats.cross_org +=1;
+            }
+            stats.total_collaborations += 1;
+        });
+
+        var $table = $('<table>').attr('class','table table-striped');
+        $table.append("<th><tr><td>Collaborations</td><td>Count</td><td>Percent</td></tr></th>");
+        $table.append("<tr><td>Within Department</td><td>"+ stats.in_department+"</td><td>" + Math.floor(stats.in_department * 100 / stats.total_collaborations) + " % </td>");
+        $table.append("<tr><td>Across Departments</td><td>"+ stats.cross_department_in_org+"</td><td>" + Math.floor(stats.cross_department_in_org * 100 / stats.total_collaborations) + " % </td>");
+        $table.append("<tr><td>Across Colleges</td><td>"+ stats.cross_org+"</td><td>" + Math.floor(stats.cross_org  * 100 / stats.total_collaborations) + " % </td>");
+        $table.append("<tr><td>Total</td><td>"+ stats.total_collaborations+"</td><td>100 %</td>");
+        $data_table_div.empty().append($table);
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "name": "Funding",
+  "children": [
+  {
+    "name": "Federal",
+    "children": [
+      {"name": "Agriculture", "size": 921274},
+      {"name": "Commerce", "size": 0},
+      {"name": "Defense", "size": 17057461},
+      {"name": "Education", "size": 26651645},
+      {"name": "Energy", "size": 3028113},
+      {"name": "Health & Human Services", "size": 231160243},
+      {"name": "Interior", "size": 91212},
+      {"name": "Transportation", "size": 2198752},
+      {"name": "Protection Agency", "size": 579871},
+      {"name": "NASA", "size": 8347769},
+      {"name": "National Science Foundation", "size": 8225705},
+      {"name": "Other", "size": 3291378}
+    ]
+  },
+  {
+    "name": "Non-Federal",
+    "children": [
+      {"name": "Business & Corporations", "size": 44717805},
+      {"name": "Foundations & Associations", "size": 38587757},
+      {"name": "Individuals", "size": 1000},
+      {"name": "State & Local Governments", "size": 42455581},
+      {"name": "Hospitals & Other Universities", "size": 29161935},
+      {"name": "Other", "size": 110825}
+    ]
+  }
+  ]
+}

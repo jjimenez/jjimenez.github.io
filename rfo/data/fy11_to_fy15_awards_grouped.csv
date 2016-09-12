@@ -1,0 +1,222 @@
+dsp_item_id	college	fiscal_year	award_range	award_total_dollars	award_total	change
+1	Business Administration	2011	1	8000	1	1
+2	Business Administration	2011	2	261852	8	8
+3	Business Administration	2012	1	7000	1	0
+4	Business Administration	2012	2	534433	14	6
+5	Business Administration	2013	1	9500	2	1
+6	Business Administration	2013	2	384506	11	-3
+7	Business Administration	2013	3	218675	1	1
+8	Business Administration	2014	1	9500	2	0
+9	Business Administration	2014	2	248728	5	-6
+10	Business Administration	2014	3	102188	1	0
+11	Business Administration	2015	1	17500	3	1
+12	Business Administration	2015	2	365575	7	2
+13	Business Administration	2015	3	232565	2	1
+14	Dentistry	2011	1	33642	9	9
+15	Dentistry	2011	2	208307	5	5
+16	Dentistry	2011	3	4058981	14	14
+17	Dentistry	2012	1	33468	8	-1
+18	Dentistry	2012	2	486518	12	7
+19	Dentistry	2012	3	4016150	16	2
+20	Dentistry	2012	4	3235161	2	2
+21	Dentistry	2013	1	24550	8	0
+22	Dentistry	2013	2	795250	19	7
+23	Dentistry	2013	3	1432676	7	-9
+24	Dentistry	2013	4	1046085	1	-1
+25	Dentistry	2014	1	20645	5	-3
+26	Dentistry	2014	2	882410	27	8
+27	Dentistry	2014	3	3397832	10	3
+28	Dentistry	2015	1	44980	14	9
+29	Dentistry	2015	2	497910.7	14	-13
+30	Dentistry	2015	3	2977677.69	15	5
+31	Education	2011	1	8507	3	3
+32	Education	2011	2	610681	19	19
+33	Education	2011	3	4306855	13	13
+34	Education	2011	4	1508988	1	1
+35	Education	2012	1	25284	8	5
+36	Education	2012	2	576630	16	-3
+37	Education	2012	3	4830952	16	3
+38	Education	2012	4	2520059	1	0
+39	Education	2013	1	26066	8	0
+40	Education	2013	2	708033	16	0
+41	Education	2013	3	3810772	13	-3
+42	Education	2013	4	1876003	1	0
+43	Education	2014	1	19280	4	-4
+44	Education	2014	2	1133647	30	14
+45	Education	2014	3	5308044	20	7
+46	Education	2014	4	5039555	2	1
+47	Education	2015	1	7900	3	-1
+48	Education	2015	2	806452	23	-7
+49	Education	2015	3	3821365	13	-7
+50	Education	2015	4	1637875	1	-1
+51	Engineering	2011	1	133552	31	31
+52	Engineering	2011	2	4755594	100	100
+53	Engineering	2011	3	17584776	67	67
+54	Engineering	2011	4	2515285	2	2
+55	Engineering	2012	1	142093	23	-8
+56	Engineering	2012	2	4110209	89	-11
+57	Engineering	2012	3	19079444	82	15
+58	Engineering	2012	4	7467594	4	2
+59	Engineering	2013	1	92500	18	-5
+60	Engineering	2013	2	4970092	106	17
+61	Engineering	2013	3	19645411	72	-10
+62	Engineering	2013	4	5110433	4	0
+63	Engineering	2014	1	60615	12	-6
+64	Engineering	2014	2	5122553	107	1
+65	Engineering	2014	3	17933226	68	-4
+66	Engineering	2014	4	7684169	4	0
+67	Engineering	2015	1	174537.82	34	22
+68	Engineering	2015	2	5055440.45	118	11
+69	Engineering	2015	3	16099860.36	64	-4
+70	Engineering	2015	4	6651582	4	0
+71	Graduate College	2011	1	9967	1	1
+72	Graduate College	2011	2	383981	13	13
+73	Graduate College	2011	3	1473654	6	6
+74	Graduate College	2012	1	180	1	0
+75	Graduate College	2012	2	871797	30	17
+76	Graduate College	2012	3	2680938	8	2
+77	Graduate College	2013	1	14064	4	3
+78	Graduate College	2013	2	423820	15	-15
+79	Graduate College	2013	3	2740881	6	-2
+80	Graduate College	2014	1	1794	1	-3
+81	Graduate College	2014	2	290733	12	-3
+82	Graduate College	2014	3	2415905	7	1
+83	Graduate College	2015	1	3911.5	1	0
+84	Graduate College	2015	2	199755.07	7	-5
+85	Graduate College	2015	3	1833668	6	-1
+86	Law	2011	2	91891	4	4
+87	Law	2011	3	256263	2	2
+88	Law	2012	2	80007	3	-1
+89	Law	2012	3	170873	1	-1
+90	Law	2013	2	136958	3	0
+91	Law	2013	3	275141	2	1
+92	Law	2014	1	5336	2	2
+93	Law	2014	2	135749	6	3
+94	Law	2014	3	368854	3	1
+95	Law	2015	1	12100	3	1
+96	Law	2015	2	163641.6	4	-2
+97	Law	2015	3	173586	1	-2
+98	Liberal Arts and Sciences	2011	1	109070	30	30
+99	Liberal Arts and Sciences	2011	2	4830990	115	115
+100	Liberal Arts and Sciences	2011	3	31496242	112	112
+101	Liberal Arts and Sciences	2011	4	12332437	7	7
+102	Liberal Arts and Sciences	2012	1	165574	38	8
+103	Liberal Arts and Sciences	2012	2	5119862	114	-1
+104	Liberal Arts and Sciences	2012	3	32685397	120	8
+105	Liberal Arts and Sciences	2012	4	14775911	6	-1
+106	Liberal Arts and Sciences	2013	1	124361	24	-14
+107	Liberal Arts and Sciences	2013	2	5867398	134	20
+108	Liberal Arts and Sciences	2013	3	28933693	109	-11
+109	Liberal Arts and Sciences	2013	4	5965031	4	-2
+110	Liberal Arts and Sciences	2014	1	167328	33	9
+111	Liberal Arts and Sciences	2014	2	5701320	132	-2
+112	Liberal Arts and Sciences	2014	3	31497680	119	10
+113	Liberal Arts and Sciences	2014	4	6176406	3	-1
+114	Liberal Arts and Sciences	2015	1	116728	28	-5
+115	Liberal Arts and Sciences	2015	2	5578493.34	118	-14
+116	Liberal Arts and Sciences	2015	3	34222711.09	126	7
+117	Liberal Arts and Sciences	2015	4	4222385	3	0
+118	Medicine	2011	1	385601	129	129
+119	Medicine	2011	2	17936486	394	394
+120	Medicine	2011	3	123815563	428	428
+121	Medicine	2011	4	79267861	33	33
+122	Medicine	2012	1	513071	126	-3
+123	Medicine	2012	2	17263802	389	-5
+124	Medicine	2012	3	116800614	424	-4
+125	Medicine	2012	4	58114171	28	-5
+126	Medicine	2013	1	496384	123	-3
+127	Medicine	2013	2	19038437	420	31
+128	Medicine	2013	3	119496567	428	4
+129	Medicine	2013	4	71573676	33	5
+130	Medicine	2013	5	11000000	1	1
+131	Medicine	2014	1	454637	125	2
+132	Medicine	2014	2	21430137	463	43
+133	Medicine	2014	3	121158098	420	-8
+134	Medicine	2014	4	57497086	29	-4
+135	Medicine	2015	1	455735.89	139	14
+136	Medicine	2015	2	20866729.58	469	6
+137	Medicine	2015	3	124969004.7	408	-12
+138	Medicine	2015	4	30271247	18	-11
+139	Medicine	2015	5	35000000	1	1
+140	Nursing	2011	1	51375	11	11
+141	Nursing	2011	2	607076	16	16
+142	Nursing	2011	3	3040391	8	8
+143	Nursing	2012	1	8410	4	-7
+144	Nursing	2012	2	505866	13	-3
+145	Nursing	2012	3	1858119	9	1
+146	Nursing	2013	1	22391	5	1
+147	Nursing	2013	2	528270	14	1
+148	Nursing	2013	3	3263634	11	2
+149	Nursing	2013	4	1032640	1	1
+150	Nursing	2014	1	35407	8	3
+151	Nursing	2014	2	745586	18	4
+152	Nursing	2014	3	3002717	10	-1
+153	Nursing	2015	1	22702	6	-2
+154	Nursing	2015	2	479393	14	-4
+155	Nursing	2015	3	3002279	8	-2
+156	Other Administrative Units	2011	1	316246	73	73
+157	Other Administrative Units	2011	2	6125129	155	155
+158	Other Administrative Units	2011	3	28764750	90	90
+159	Other Administrative Units	2011	4	36937266	15	15
+160	Other Administrative Units	2011	5	15263798	1	1
+161	Other Administrative Units	2012	1	375255	82	9
+162	Other Administrative Units	2012	2	5926550	150	-5
+163	Other Administrative Units	2012	3	24669028	65	-25
+164	Other Administrative Units	2012	4	7857219	4	-11
+165	Other Administrative Units	2012	5	15475403	1	0
+166	Other Administrative Units	2013	1	399666	98	16
+167	Other Administrative Units	2013	2	5380008	141	-9
+168	Other Administrative Units	2013	3	24490992	64	-1
+169	Other Administrative Units	2013	4	22135189	10	6
+170	Other Administrative Units	2013	5	16042784	1	0
+171	Other Administrative Units	2014	1	481437	117	19
+172	Other Administrative Units	2014	2	5509803	145	4
+173	Other Administrative Units	2014	3	18697452	50	-14
+174	Other Administrative Units	2014	4	14610754	8	-2
+175	Other Administrative Units	2014	5	29834829	2	1
+176	Other Administrative Units	2015	1	-526030.57	96	-21
+177	Other Administrative Units	2015	2	3701872.88	121	-24
+178	Other Administrative Units	2015	3	23531005.56	62	12
+179	Other Administrative Units	2015	4	22779569.5	11	3
+180	Other Administrative Units	2015	5	16701508.65	1	-1
+181	Pharmacy	2011	1	43438	8	8
+182	Pharmacy	2011	2	616527	14	14
+183	Pharmacy	2011	3	4650840	14	14
+184	Pharmacy	2011	4	11683786	4	4
+185	Pharmacy	2012	1	95173	15	7
+186	Pharmacy	2012	2	570518	13	-1
+187	Pharmacy	2012	3	4397513	12	-2
+188	Pharmacy	2012	4	7500000	1	-3
+189	Pharmacy	2013	1	52000	10	-5
+190	Pharmacy	2013	2	341352	11	-2
+191	Pharmacy	2013	3	3329599	11	-1
+192	Pharmacy	2013	4	8100000	1	0
+193	Pharmacy	2014	1	60275	10	0
+194	Pharmacy	2014	2	485853	12	1
+195	Pharmacy	2014	3	2353408	8	-3
+196	Pharmacy	2014	4	11687400	2	1
+197	Pharmacy	2015	1	26360	6	-4
+198	Pharmacy	2015	2	398101.69	9	-3
+199	Pharmacy	2015	3	1496981	4	-4
+200	Pharmacy	2015	4	2130152	1	-1
+201	Pharmacy	2015	5	10269344	1	1
+202	Public Health	2011	1	76558	22	22
+203	Public Health	2011	2	2904057	67	67
+204	Public Health	2011	3	26111170	73	73
+205	Public Health	2011	4	23046556	10	10
+206	Public Health	2012	1	136113	27	5
+207	Public Health	2012	2	3082826	82	15
+208	Public Health	2012	3	15845308	47	-26
+209	Public Health	2012	4	30671383	14	4
+210	Public Health	2013	1	140785	28	1
+211	Public Health	2013	2	2086444	63	-19
+212	Public Health	2013	3	21892825	66	19
+213	Public Health	2013	4	14823781	8	-6
+214	Public Health	2014	1	45784	9	-19
+215	Public Health	2014	2	2296277	68	5
+216	Public Health	2014	3	18510987	55	-11
+217	Public Health	2014	4	30881138	11	3
+218	Public Health	2015	1	140157.99	25	16
+219	Public Health	2015	2	2063737.86	61	-7
+220	Public Health	2015	3	19265045.16	59	4
+221	Public Health	2015	4	29402589	10	-1

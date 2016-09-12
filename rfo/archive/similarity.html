@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html class="ocks-org do-not-copy" data-ember-extension="1">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Researcher Similarity Based on Award Titles</title>
+    <link type="text/css" rel="stylesheet" href="../styles/style.css">
+    <link type="text/css" rel="stylesheet" href="../styles/jquery.nouislider.min.css">
+    <link type="text/css" rel="stylesheet" href="../styles/jquery.nouislider.pips.min.css">
+    <style>
+
+
+        .background {
+            fill: #eee;
+        }
+
+        line {
+            stroke: #fff;
+        }
+
+        text.active {
+            fill: red;
+        }
+
+        .noUi-horizontal .noUi-handle {
+            width: 20px;
+        }
+    </style>
+    <script src="../javascript/d3.v2.min.js"></script>
+    <script src="../javascript/moment.min.js"></script>
+    <script src="../javascript/numeral.min.js"></script>
+    <script src="../javascript/jquery-1.11.1.min.js"></script>
+    <script src="../javascript/jquery.nouislider.all.min.js"></script>
+    <script src="../javascript/jquery.simplemodal.1.4.4.min.js"></script>
+
+</head>
+<body>
+
+<h1>Award Title Similarity</h1>
+
+<aside style="margin-top:80px;">
+    <p>Filter: <select id="college">
+    </select>
+
+    <p>Order: <select id="order">
+        <option value="name">by Name</option>
+        <option value="count">by Count of Similar Individuals</option>
+        <option value="college">by College</option>
+    </select>
+
+    </p>
+    <p>Similarity Measure: <span id='similarity' style="font-weight: bold"></span>
+
+    <div id="slider"></div>
+    </p>
+
+    <p>This matrix diagram visualizes Similarity of PIs based on Award Titles and project summaries for the months of June, July, and August 2014.
+        Similarity is determined using a <a href="http://en.wikipedia.org/wiki/Vector_space_model">Vector Space Model (VSM)</a>
+        with <a href="http://en.wikipedia.org/wiki/Tf%E2%80%93idf">tf*idf weights</a>.
+        Additional data would improve the accuracy of this model.
+    </p>
+
+    <p>Each colored cell represents two PIs that similar to each other based on award titles; darker cells indicate PIs that
+        more similar.
+    </p>
+    <p>Use the slider to change the threshold of similarity for Investigators displayed.  Click on
+        the cells to see the Investigator's names and the terms used to determine similarity.</p>
+
+    <p>Built with <a href="http://d3js.org/">d3.js</a>.
+    </p>
+
+    <p>
+    <dl id="colors">
+    </dl>
+    </p>
+</aside>
+
+<script>
+
+var college_selected = 'all';
+var college_name = "All";
+var all_links = [];
+var all_nodes = [];
+var display_links = [];
+var display_nodes = [];
+var mapped_links = [];
+var selected_order = 'name';
+
+var margin = {top: 80, right: 0, bottom: 10, left: 80},
+        width = 1020,
+        height = 1020;
+
+var x = d3.scale.ordinal().rangeBands([0, width]);
+var mapped_colleges = [];
+var colleges_mapped = false;
+
+function map_colleges(college_list) {
+    if (!colleges_mapped) {
+        colleges_mapped = true;
+        var i = 0;
+        college_list.forEach(function (d) {
+            mapped_colleges[d.college] = i++;
+            if (d.key != 'all') {
+                d3.select("#colors")
+                        .append("dt")
+                        .text(d.college)
+                        .append('dd')
+                        .text('Investigators')
+                        .style("background-color", color(d.college));
+            }
+        });
+    }
+}
+
+var color = d3.scale.category20();
+var opacity_scale = d3.scale.pow().domain([0,1]).range([.3,1]).clamp(true);
+var similarity_limit = 0.3;
+
+$("#slider").noUiSlider({
+    start: 0.3,
+    range: {
+        'min':  0.1,
+        'max':  0.9
+    },
+    step: 0.1
+})
+        .change(function() {
+            similarity_limit = $('#slider').val();
+            show_similarity();
+            jump();
+        }
+);
+
+function show_similarity(){
+    $('#similarity').text(similarity_limit);
+}
+
+show_similarity();
+
+d3.json("pi_similarity.json", function (all) {
+    var college_list = all.colleges;
+    color = d3.scale.category20().domain(college_list.map(function (college) {
+        return college.college
+    }));
+
+    map_colleges(college_list);
+    d3.select('#college')
+            .selectAll('option')
+            .data(college_list)
+            .enter()
+            .append('option')
+            .attr("value", function (d) {
+                return d.key;
+            })
+            .attr("selected", function (d) {
+                return d.key == college_selected ? 'true' : null;
+            })
+            .text(function (d) {
+                return d.college;
+            });
+
+    setup(all.nodes, all.links);
+
+});
+
+
+function setup(raw_nodes, raw_links) {
+    all_links = raw_links;
+    all_nodes = raw_nodes;
+    map_links(all_links, all_nodes);
+    jump();
+}
+
+
+function map_links(raw_links, nodes) {
+    raw_links.forEach(function (link) {
+        mapped_links.push({ source: nodes[link.source],
+            target: nodes[link.target],
+            value: link.value})
+    });
+}
+
+function filter_links() {
+    filtered_nodes = {};
+
+    display_links = mapped_links.filter(function (d) {
+        var match_college = d.source.college == college_name;
+        match_college = match_college || d.target.college == college_name;
+        match_college = match_college || college_selected == 'all';
+        var similarity_significant = d.value > similarity_limit;
+        var is_match =  match_college && similarity_significant;
+        if (is_match) {
+            filtered_nodes[d.target.contact_pi] = d.target;
+            filtered_nodes[d.source.contact_pi] = d.source;
+        }
+        return is_match;
+    });
+
+    //if (d3.select('#add_remove').property('checked')) {
+        display_nodes = d3.values(filtered_nodes);
+//    } else {
+//        display_nodes = all_nodes;
+//    }
+
+}
+
+
+function jump() {
+    filter_links();
+    d3.select("svg").remove();
+    var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .style("margin-left", -margin.left + "px")
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var matrix = [],
+            nodes = display_nodes,
+            n = nodes.length;
+
+    // Compute index per node.
+    nodes.forEach(function (node, i) {
+        node.index = i;
+        node.count = 0;
+        matrix[i] = d3.range(n).map(function (j) {
+            return {x: j, y: i, z: 0};
+        });
+    });
+
+    // Convert links to matrix; count character occurrences.
+     display_links.forEach(function (link) {
+        matrix[link.source.index][link.target.index].z = link.value;
+        matrix[link.target.index][link.source.index].z = link.value;
+        if (link.source.index != link.target.index) {
+            matrix[link.source.index][link.source.index].z += 1;
+            matrix[link.target.index][link.target.index].z += 1;
+        }
+        nodes[link.source.index].count += 1;
+        nodes[link.target.index].count += 1;
+    });
+
+    // Precompute the orders.
+    var orders = {
+        name: d3.range(n).sort(function (a, b) {
+            return d3.ascending(nodes[a].contact_pi, nodes[b].contact_pi);
+        }),
+        count: d3.range(n).sort(function (a, b) {
+            return nodes[b].count - nodes[a].count;
+        }),
+        college: d3.range(n).sort(function (a, b) {
+            return d3.ascending(nodes[b].college, nodes[a].college);
+        })
+    };
+
+    // The default sort order.
+    x.domain(orders[selected_order]);
+
+    svg.append("rect")
+            .attr("class", "background")
+            .attr("width", width)
+            .attr("height", height);
+
+    var row = svg.selectAll(".row")
+            .data(matrix)
+            .enter().append("g")
+            .attr("class", "row")
+            .attr("transform", function (d, i) {
+                return "translate(0," + x(i) + ")";
+            })
+            .each(row);
+
+    row.append("line")
+            .attr("x2", width);
+
+    row.append("rect")
+            .attr("x", -10)
+            .attr('class', 'name_rect')
+            .attr("y", (x.rangeBand() / 2) - 5)
+            .style("fill", function (d, i) {
+                return color(nodes[i].college);
+            })
+            .attr('height', 10)
+            .attr("width", 10);
+
+    row.append("text")
+            .attr("x", -12)
+            .attr("y", x.rangeBand() / 2)
+            .attr("dy", ".32em")
+            .attr("text-anchor", "end")
+            .attr('background-color', function (d, i) {
+            })
+            .text(function (d, i) {
+                return truncate_pi(nodes[i].contact_pi);
+            });
+
+    var column = svg.selectAll(".column")
+            .data(matrix)
+            .enter().append("g")
+            .attr("class", "column")
+            .attr("transform", function (d, i) {
+                return "translate(" + x(i) + ")rotate(-90)";
+            });
+
+    column.append("line")
+            .attr("x1", -width);
+    column.append("rect")
+            .attr("x", 2)
+            .attr('class', 'name_rect')
+            .attr("y", (x.rangeBand() / 2) - 5)
+            .style("fill", function (d, i) {
+                return color(nodes[i].college);
+            })
+            .attr('height', 10)
+            .attr("width", 10);
+
+    column.append("text")
+            .attr("x", 12)
+            .attr("y", x.rangeBand() / 2)
+            .attr("dy", ".32em")
+            .attr("text-anchor", "start")
+            .text(function (d, i) {
+                return truncate_pi(nodes[i].contact_pi);
+            });
+
+    function row(row) {
+        var cell = d3.select(this).selectAll(".cell")
+                .data(row.filter(function (d) {
+                    return d.z;
+                }))
+                .enter().append("rect")
+                .attr("class", "cell")
+                .attr("x", function (d) {
+                    return x(d.x);
+                })
+                .attr("width", x.rangeBand())
+                .attr("height", x.rangeBand())
+                .style("fill-opacity", function (d) {
+                    return opacity_scale(d.z);
+                })
+                .style("fill", function (d) {
+                    return nodes[d.x].college == nodes[d.y].college ? color(nodes[d.x].college) : null;
+                })
+                .on("mouseover", mouseover)
+                .on("mouseout", mouseout)
+                .on("click", function (d) {
+                    var modal_content;
+                    modal_content = create_title(d, true);
+                    modal_content = modal_content.replace(/\n/g, '<br />').replace(/  Terms: /g, "&nbsp;&nbsp;&nbsp;Terms: ");
+                    $.modal(modal_content);
+                });
+        ;
+    }
+
+    function create_title(d, html) {
+        var title = nodes[d.x].contact_pi + " -- College: " + nodes[d.x].college;
+        var matching_terms = $.map(nodes[d.x].terms,function(a){return $.inArray(a, nodes[d.y].terms) < 0 ? null : a;});
+        var source_terms = nodes[d.x].terms;
+        var target_terms = nodes[d.y].terms;
+        if (html) {
+            source_terms = source_terms.map(function (d) {
+                if ($.inArray(d, matching_terms) > -1 ) {
+                    return "<span class='term_highlight'>" + d + "</span>";
+                }
+                else {
+                    return d;
+                }
+            });
+            target_terms = target_terms.map(function (d) {
+                if ($.inArray(d, matching_terms) > -1) {
+                    return "<span class='term_highlight'>" + d + "</span>";
+                }
+                else {
+                    return d;
+                }
+            });
+        }
+        source_terms = source_terms.join(', ');
+        target_terms = target_terms.join(', ');
+        title = title + "\n  Terms: " + source_terms;
+        if (nodes[d.x] != nodes[d.y]) {
+            title = title + " \n\n" + nodes[d.y].contact_pi + " -- College: " + nodes[d.y].college;
+            title = title + "\n  Terms: " + target_terms;
+            title = title + " \n\n Similarity: " + numeral(d.z).format('0[.]0000');
+        } else {
+            title = title + "\n  Terms: " + source_terms;
+            title = title + " \n\n Similar Individuals: " + numeral(d.z / 2).format('0,0');
+        }
+        return title;
+    }
+
+    function mouseover(p) {
+        d3.selectAll(".row text").classed("active", function (d, i) {
+            return i == p.y;
+        });
+        d3.selectAll(".column text").classed("active", function (d, i) {
+            return i == p.x;
+        });
+    }
+
+    function mouseout() {
+        d3.selectAll("text").classed("active", false);
+    }
+
+    d3.select("#order").on("change", function () {
+        selected_order = this.value;
+        order(this.value);
+    });
+
+    function order(value) {
+        x.domain(orders[value]);
+
+        var t = svg.transition().duration(2500);
+
+        t.selectAll(".row")
+                .delay(function (d, i) {
+                    return x(i) * 4;
+                })
+                .attr("transform", function (d, i) {
+                    return "translate(0," + x(i) + ")";
+                })
+                .selectAll(".cell")
+                .delay(function (d) {
+                    return x(d.x) * 4;
+                })
+                .attr("x", function (d) {
+                    return x(d.x);
+                });
+
+        t.selectAll(".column")
+                .delay(function (d, i) {
+                    return x(i) * 4;
+                })
+                .attr("transform", function (d, i) {
+                    return "translate(" + x(i) + ")rotate(-90)";
+                });
+    }
+
+    function truncate_pi(pi) {
+        rval = pi.split(',')[0] + ',';
+        rval = rval + pi.split(',')[1][1];
+        return rval;
+    }
+
+}
+
+//d3.select("input[type=checkbox]").on("change", function () {
+//    d3.select('#order').selectAll('option').each(function (d, i) {
+//        this.selected = this.value == 'name' ? 'true' : null;
+//    })
+//    jump();
+//});
+
+d3.select("#college").on("change", function () {
+    college_selected = this.value;
+    college_name = this.selectedOptions.item().text
+//    d3.select('#order').selectAll('option').each(function (d, i) {
+//        this.selected = this.value == 'name' ? 'true' : null;
+//    })
+    jump();
+});
+
+</script>
+
+
+<script type="text/javascript" src="chrome-extension://bmdblncegkenkacieihfhpjfppoconhi/in-page-script.js"></script>
+</body>
+</html>

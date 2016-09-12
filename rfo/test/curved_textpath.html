@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!-- saved from url=(0040)http://bl.ocks.org/mbostock/raw/3151228/ -->
+<html data-ember-extension="1"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="utf-8">
+<style>
+
+path {
+  fill: #3182bd;
+}
+
+text {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 24px;
+}
+
+</style>
+</head><body>
+<!--<script src="../javascript/libs/d3.v2.min.js"></script>-->
+<script src="../javascript/libs/d3.v3.min.js"></script>
+<script>
+
+var arc = d3.svg.arc()
+    .innerRadius(180)
+    .outerRadius(220)
+    .startAngle(0)
+    .endAngle(function(input_t) { return input_t * 2 * Math.PI / 3; });
+
+var svg = d3.select("body").append("svg")
+    .attr("width", 960)
+    .attr("height", 500)
+  .append("g")
+    .attr("transform", "translate(480,250)");
+
+
+var other_arc = d3.svg.arc()
+        .innerRadius(180)
+        .outerRadius(220)
+        .startAngle(0)
+        .endAngle(function(input_t) { return input_t * 2 * Math.PI / 3; });
+
+svg.append("path")
+        .attr("id", "jj")
+        .attr("d", other_arc(1));
+
+
+svg.append("text")
+        .attr("x", 8)
+        .attr("dy", 28)
+        .append("textPath")
+        .attr("class", "textpath")
+        .attr("xlink:href", "#jj")
+        .text("Hello, curved textPath!");
+
+
+</script>
+</body></html>

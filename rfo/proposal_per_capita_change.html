@@ -1,0 +1,45 @@
+<html>
+<head>
+    <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}"></script>
+    <script src="javascript/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript">
+        google.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['College', 'Proposal Growth', { role: 'style' }, { role: 'annotation' }],
+
+                ['Law',0.5,'#4285F4','11 Additional Proposals*'],
+                ['Dentistry',0.211538461538461,'#4285F4','18 Additional Proposals*'],
+                ['Education',0.137931034482759,'#4285F4','11 Additional Proposals*'],
+                ['Public Health',0.12621359223301,'#4285F4','41 Additional Proposals*'],
+                ['Medicine',0.0886814469078182,'#4285F4','29 Additional Proposals*'],
+                ['Lib Arts & Sciences',0.0785953177257524,'#4285F4','8 Additional Proposals*'],
+                ['All',0.0705311250713879,'#4285F4','15 Additional Proposals*'],
+                ['Engineering',-0.00909090909090916,'#dc3912','-3 Fewer Proposals*'],
+                ['Pharmacy',-0.115384615384615,'#dc3912','-30 Fewer Proposals*'],
+                ['Nursing',-0.191176470588235,'#dc3912','-43 Fewer Proposals*'],
+                ['Graduate',-0.25,'#dc3912','-50 Fewer Proposals*'],
+                ['Business',-0.3,'#dc3912','-7 Fewer Proposals*'],
+            ]);
+
+
+            var options = {
+                title:  'Change in Proposals FY2010 - FY2014*\n*Per 100 Current Faculty',
+                hAxis: {
+                    format: '#%'
+                }
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+
+            chart.draw(data, options);
+
+            $('text:contains("Proposal Growth")').parent().parent().remove();
+        }
+    </script>
+</head>
+<body>
+<div id="chart_div" style="width: 900px; height: 500px;"></div>
+</body>
+</html>

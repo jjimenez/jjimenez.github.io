@@ -1,0 +1,220 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>Federal Research Funding 204-2015</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/nouislider/distribute/jquery.nouislider.min.css" />
+    <link rel="stylesheet" href="bower_components/nouislider/distribute/jquery.nouislider.pips.min.css" />
+    <link rel="stylesheet" href="bower_components/qtip2/jquery.qtip.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap/docs/assets/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap-css/css/bootstrap.min.css" />
+    <!-- endbower -->
+
+    <!-- bower:js -->
+    <script src="bower_components/modernizr/modernizr.js"></script>
+    <script src="bower_components/jquery/jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/numeral/numeral.js"></script>
+    <script src="bower_components/nouislider/distribute/jquery.nouislider.all.min.js"></script>
+    <script src="bower_components/ericmmartin.simplemodal/src/jquery.simplemodal.js"></script>
+    <script src="bower_components/eventEmitter/EventEmitter.js"></script>
+    <script src="bower_components/eventie/eventie.js"></script>
+    <script src="bower_components/imagesloaded/imagesloaded.js"></script>
+    <script src="bower_components/qtip2/jquery.qtip.js"></script>
+    <script src="bower_components/bootstrap/docs/assets/js/bootstrap.js"></script>
+    <script src="bower_components/d3/d3.js"></script>
+    <script src="bower_components/dimple/dist/dimple.v2.1.6.min.js"></script>
+    <script src="bower_components/bootstrap-css/js/bootstrap.min.js"></script>
+    <!-- endbower -->
+
+    <!-- CSS concatenated and minified via ant build script-->
+    <link rel="stylesheet" href="styles/reset.css">
+    <link rel="stylesheet" href="styles/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/bubble_style.css">
+    <!-- end CSS-->
+</head>
+
+<body>
+
+<div id="container" class="container">
+    <header>
+        <h1>Federal Research Funding</h1>
+
+        <h2>By Agency for FY 2004 - FY 2015</h2>
+    </header>
+    <div id="main" role="main">
+        <div id="vis">
+            <br />
+            <svg width="847" height="500" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                    <g class="x axis" transform="translate(0,480)"
+                       style="stroke-width: 1px; font-size: 10px; font-family: Arial, Helvetica;">
+                        <g class="tick" transform="translate(15,0)" style="opacity: 1;">
+                            <line y2="-480" x2="0"
+                                  style="shape-rendering: crispedges; fill: none; stroke: rgb(204, 204, 204);"></line>
+                            <text y="3" x="0" dy=".71em" style="text-anchor: middle;">2005</text>
+                        </g>
+                        <g class="tick" transform="translate(84.7,0)" style="opacity: 1;">
+                            <line y2="-480" x2="0"
+                                  style="shape-rendering: crispedges; fill: none; stroke: rgb(204, 204, 204);"></line>
+                            <text y="3" x="0" dy=".71em" style="text-anchor: middle;">2006</text>
+                        </g>
+                        <g class="tick" transform="translate(169.4,0)" style="opacity: 1;">
+                            <line y2="-480" x2="0"
+                                  style="shape-rendering: crispedges; fill: none; stroke: rgb(204, 204, 204);"></line>
+                            <text y="3" x="0" dy=".71em" style="text-anchor: middle;">2007</text>
+                        </g>
+                        <g class="tick" transform="translate(254.10000000000005,0)" style="opacity: 1;">
+                            <line y2="-480" x2="0"
+                                  style="shape-rendering: crispedges; fill: none; stroke: rgb(204, 204, 204);"></line>
+                            <text y="3" x="0" dy=".71em" style="text-anchor: middle;">2008</text>
+                        </g>
+                        <g class="tick" transform="translate(338.8,0)" style="opacity: 1;">
+                            <line y2="-480" x2="0"
+                                  style="shape-rendering: crispedges; fill: none; stroke: rgb(204, 204, 204);"></line>
+                            <text y="3" x="0" dy=".71em" style="text-anchor: middle;">2009</text>
+                        </g>
+                        <g class="tick" transform="translate(423.5,0)" style="opacity: 1;">
+                            <line y2="-480" x2="0"
+                                  style="shape-rendering: crispedges; fill: none; stroke: rgb(204, 204, 204);"></line>
+                            <text y="3" x="0" dy=".71em" style="text-anchor: middle;">2010</text>
+                        </g>
+                        <g class="tick" transform="translate(508.2000000000001,0)" style="opacity: 1;">
+                            <line y2="-480" x2="0"
+                                  style="shape-rendering: crispedges; fill: none; stroke: rgb(204, 204, 204);"></line>
+                            <text y="3" x="0" dy=".71em" style="text-anchor: middle;">2011</text>
+                        </g>
+                        <g class="tick" transform="translate(592.9000000000001,0)" style="opacity: 1;">
+                            <line y2="-480" x2="0"
+                                  style="shape-rendering: crispedges; fill: none; stroke: rgb(204, 204, 204);"></line>
+                            <text y="3" x="0" dy=".71em" style="text-anchor: middle;">2012</text>
+                        </g>
+                        <g class="tick" transform="translate(677.6,0)" style="opacity: 1;">
+                            <line y2="-480" x2="0"
+                                  style="shape-rendering: crispedges; fill: none; stroke: rgb(204, 204, 204);"></line>
+                            <text y="3" x="0" dy=".71em" style="text-anchor: middle;">2013</text>
+                        </g>
+                        <g class="tick" transform="translate(762.3000000000001,0)" style="opacity: 1;">
+                            <line y2="-480" x2="0"
+                                  style="shape-rendering: crispedges; fill: none; stroke: rgb(204, 204, 204);"></line>
+                            <text y="3" x="0" dy=".71em" style="text-anchor: middle;">2014</text>
+                        </g>
+                        <g class="tick" transform="translate(835,0)" style="opacity: 1;">
+                            <line y2="-480" x2="0"
+                                  style="shape-rendering: crispedges; fill: none; stroke: rgb(204, 204, 204);"></line>
+                            <text y="3" x="0" dy=".71em" style="text-anchor: middle;">2015</text>
+                        </g>
+                        <path class="domain" d="M0,-480V0H847V-480"
+                              style="shape-rendering: crispedges; fill: none; stroke: rgb(204, 204, 204);"></path>
+                    </g>
+                    <path class="layer"
+                          d="M0,476.71333191975714L84.7,476.9839110895052L169.4,477.03604102129157L254.10000000000005,476.7828384954722L338.8,476.28388057694593L423.5,476.4526822608255L508.2000000000001,476.83248604955446L592.9000000000001,476.79276800628867L677.6,476.73319094139003L762.3000000000001,475.9388300760745L847,476.1026670045459L847,480L762.3000000000001,480L677.6,480L592.9000000000001,480L508.2000000000001,480L423.5,480L338.8,480L254.10000000000005,480L169.4,480L84.7,480L0,480Z"
+                          title="DOC" style="fill: rgb(191, 105, 105);"></path>
+                    <path class="layer"
+                          d="M0,270.7802423421234L84.7,266.1282665246195L169.4,258.6885805453991L254.10000000000005,257.0129755951242L338.8,258.2119640262098L423.5,256.50160578807737L508.2000000000001,270.9564911591152L592.9000000000001,286.3546800577153L677.6,311.6029436862275L762.3000000000001,311.8884171222002L847,315.78823249535844L847,476.1026670045459L762.3000000000001,475.9388300760745L677.6,476.73319094139003L592.9000000000001,476.79276800628867L508.2000000000001,476.83248604955446L423.5,476.4526822608255L338.8,476.28388057694593L254.10000000000005,476.7828384954722L169.4,477.03604102129157L84.7,476.9839110895052L0,476.71333191975714Z"
+                          title="DOD" style="fill: rgb(191, 142, 105);"></path>
+                    <path class="layer"
+                          d="M0,268.96065948501007L84.7,264.3136484229144L169.4,256.9012685984392L254.10000000000005,255.16360420556157L338.8,256.3328041041978L423.5,254.44371467136938L508.2000000000001,268.98548326205116L592.9000000000001,284.2570708977415L677.6,309.6244886560511L762.3000000000001,309.80570222845114L847,313.53175116232165L847,315.78823249535844L762.3000000000001,311.8884171222002L677.6,311.6029436862275L592.9000000000001,286.3546800577153L508.2000000000001,270.9564911591152L423.5,256.50160578807737L338.8,258.2119640262098L254.10000000000005,257.0129755951242L169.4,258.6885805453991L84.7,266.1282665246195L0,270.7802423421234Z"
+                          title="Interior" style="fill: rgb(191, 179, 105);"></path>
+                    <path class="layer"
+                          d="M0,237.84157258627556L84.7,232.256222752026L169.4,224.89349048163297L254.10000000000005,224.88356097081652L338.8,232.81475773545094L423.5,229.87065777837537L508.2000000000001,245.3060823425371L592.9000000000001,255.31751162321643L677.6,281.91370634506086L762.3000000000001,281.28070003051255L847,285.3294580659175L847,313.53175116232165L762.3000000000001,309.80570222845114L677.6,309.6244886560511L592.9000000000001,284.2570708977415L508.2000000000001,268.98548326205116L423.5,254.44371467136938L338.8,256.3328041041978L254.10000000000005,255.16360420556157L169.4,256.9012685984392L84.7,264.3136484229144L0,268.96065948501007Z"
+                          title="NASA" style="fill: rgb(166, 191, 105);"></path>
+                    <path class="layer"
+                          d="M0,230.7543842410389L84.7,225.33535371296472L169.4,218.60562775712003L254.10000000000005,218.5683920915584L338.8,226.29355150675156L423.5,222.9423416062018L508.2000000000001,239.15226801404614L592.9000000000001,249.354840377942L677.6,276.58155903663055L762.3000000000001,275.27831074197235L847,279.35685730982664L847,285.3294580659175L762.3000000000001,281.28070003051255L677.6,281.91370634506086L592.9000000000001,255.31751162321643L508.2000000000001,245.3060823425371L423.5,229.87065777837537L338.8,232.81475773545094L254.10000000000005,224.88356097081652L169.4,224.89349048163297L84.7,232.256222752026L0,237.84157258627556Z"
+                          title="USDA" style="fill: rgb(130, 191, 105);"></path>
+                    <path class="layer"
+                          d="M0,224.67752362137537L84.7,219.1591979851368L169.4,212.45429580633316L254.10000000000005,212.7943815517964L338.8,220.1223605343318L423.5,216.9399523176616L508.2000000000001,233.88466252592278L592.9000000000001,242.59284351194384L677.6,267.9428846263246L762.3000000000001,267.08646431840634L847,270.504698416967L847,279.35685730982664L762.3000000000001,275.27831074197235L677.6,276.58155903663055L592.9000000000001,249.354840377942L508.2000000000001,239.15226801404614L423.5,222.9423416062018L338.8,226.29355150675156L254.10000000000005,218.5683920915584L169.4,218.60562775712003L84.7,225.33535371296472L0,230.7543842410389Z"
+                          title="Other" style="fill: rgb(105, 191, 117);"></path>
+                    <path class="layer"
+                          d="M0,222.60722061614683L84.7,216.83817483179308L169.4,210.33434524702244L254.10000000000005,210.42619322207457L338.8,217.64742996333325L423.5,214.0926650910464L508.2000000000001,231.40228482181183L592.9000000000001,240.24203182615082L677.6,265.8825111319125L762.3000000000001,264.9193485827175L847,268.3152412819412L847,270.504698416967L762.3000000000001,267.08646431840634L677.6,267.9428846263246L592.9000000000001,242.59284351194384L508.2000000000001,233.88466252592278L423.5,216.9399523176616L338.8,220.1223605343318L254.10000000000005,212.7943815517964L169.4,212.45429580633316L84.7,219.1591979851368L0,224.67752362137537Z"
+                          title="DOT" style="fill: rgb(105, 191, 154);"></path>
+                    <path class="layer"
+                          d="M0,197.3465450991141L84.7,192.47363766594435L169.4,185.3665902990748L254.10000000000005,183.97397640706856L338.8,190.07814318147734L423.5,185.3417665220337L508.2000000000001,203.62696069051475L592.9000000000001,212.59082658005923L677.6,238.91147737674734L762.3000000000001,236.64754891059823L847,238.13449315536064L847,268.3152412819412L762.3000000000001,264.9193485827175L677.6,265.8825111319125L592.9000000000001,240.24203182615082L508.2000000000001,231.40228482181183L423.5,214.0926650910464L338.8,217.64742996333325L254.10000000000005,210.42619322207457L169.4,210.33434524702244L84.7,216.83817483179308L0,222.60722061614683Z"
+                          title="DOE" style="fill: rgb(105, 191, 191);"></path>
+                    <path class="layer"
+                          d="M0,185.3243898781049L84.7,180.60042510718182L169.4,173.0961973076545L254.10000000000005,171.7730899913634L338.8,177.3212041600513L423.5,171.03582381324247L508.2000000000001,189.3284651148358L592.9000000000001,197.99941043529526L677.6,225.48677875291554L762.3000000000001,222.86538789737438L847,224.5509223584657L847,238.13449315536064L762.3000000000001,236.64754891059823L677.6,238.91147737674734L592.9000000000001,212.59082658005923L508.2000000000001,203.62696069051475L423.5,185.3417665220337L338.8,190.07814318147734L254.10000000000005,183.97397640706856L169.4,185.3665902990748L84.7,192.47363766594435L0,197.3465450991141Z"
+                          title="NSF" style="fill: rgb(105, 154, 191);"></path>
+                    <path class="layer"
+                          d="M0,181.69018891928653L84.7,176.911611838873L169.4,170.34324043379553L254.10000000000005,169.07971018240306L338.8,174.38703371379222L423.5,168.6825297497453L508.2000000000001,187.3500100846594L592.9000000000001,196.7681510940563L677.6,223.76400862626252L762.3000000000001,220.3035741067319L847,222.41359515522618L847,224.5509223584657L762.3000000000001,222.86538789737438L677.6,225.48677875291554L592.9000000000001,197.99941043529526L508.2000000000001,189.3284651148358L423.5,171.03582381324247L338.8,177.3212041600513L254.10000000000005,171.7730899913634L169.4,173.0961973076545L84.7,180.60042510718182L0,185.3243898781049Z"
+                          title="DHS" style="fill: rgb(105, 117, 191);"></path>
+                    <path class="layer"
+                          d="M0,100.00010343240439L84.7,98.15569679824995L169.4,91.99691771435073L254.10000000000005,91.82563365276712L338.8,94.76228647673031L423.5,88.58613074890235L508.2000000000001,109.7186121439986L592.9000000000001,120.01551486065074L677.6,152.35593158980777L762.3000000000001,147.6890615060792L847,150.36009991570262L847,222.41359515522618L762.3000000000001,220.3035741067319L677.6,223.76400862626252L592.9000000000001,196.7681510940563L508.2000000000001,187.3500100846594L423.5,168.6825297497453L338.8,174.38703371379222L254.10000000000005,169.07971018240306L169.4,170.34324043379553L84.7,176.911611838873L0,181.69018891928653Z"
+                          title="NIH" style="fill: rgb(130, 105, 191);"></path>
+                    <path class="layer"
+                          d="M0,14.511980058232439L84.7,15.912041083351028L169.4,10.138030543589025L254.10000000000005,12.627855380812264L338.8,11.642351432280236L423.5,4.326784338265384L508.2000000000001,28.56968499661258L592.9000000000001,39.77017319756112L677.6,77.26897079586064L762.3000000000001,71.17473353226836L847,74.5755909869003L847,150.36009991570262L762.3000000000001,147.6890615060792L677.6,152.35593158980777L592.9000000000001,120.01551486065074L508.2000000000001,109.7186121439986L423.5,88.58613074890235L338.8,94.76228647673031L254.10000000000005,91.82563365276712L169.4,91.99691771435073L84.7,98.15569679824995L0,100.00010343240439Z"
+                          title="HHS" style="fill: rgb(166, 105, 191);"></path>
+                    <path class="layer"
+                          d="M0,12.337417189431278L84.7,13.727548703733362L169.4,7.874102077439829L254.10000000000005,10.229878518641101L338.8,9.1177733071994L423.5,1.5837569752227978L508.2000000000001,25.55111370841371L592.9000000000001,36.80373184114853L677.6,74.33480034960155L762.3000000000001,68.25793972993802L847,71.70099760553984L847,74.5755909869003L762.3000000000001,71.17473353226836L677.6,77.26897079586064L592.9000000000001,39.77017319756112L508.2000000000001,28.56968499661258L423.5,4.326784338265384L338.8,11.642351432280236L254.10000000000005,12.627855380812264L169.4,10.138030543589025L84.7,15.912041083351028L0,14.511980058232439Z"
+                          title="VA" style="fill: rgb(191, 105, 179);"></path>
+                    <path class="layer"
+                          d="M0,10.458257267419299L84.7,11.96257815611051L169.4,6.3350279008910775L254.10000000000005,8.747899029286884L338.8,7.610970040804091L423.5,0L508.2000000000001,24.03686330890605L592.9000000000001,35.35154088424366L677.6,72.99928114478985L762.3000000000001,66.92242052512637L847,70.39030217776929L847,71.70099760553984L762.3000000000001,68.25793972993802L677.6,74.33480034960155L592.9000000000001,36.80373184114853L508.2000000000001,25.55111370841371L423.5,1.5837569752227978L338.8,9.1177733071994L254.10000000000005,10.229878518641101L169.4,7.874102077439829L84.7,13.727548703733362L0,12.337417189431278Z"
+                          title="EPA" style="fill: rgb(191, 105, 142);"></path>
+                    <text x="762.3000000000001" y="477.96941503803725"
+                          style="font-size: 11px; font-family: Arial, Helvetica;">DOC
+                    </text>
+                    <text x="423.5" y="366.47714402445143" style="font-size: 11px; font-family: Arial, Helvetica;">DOD
+                    </text>
+                    <text x="847" y="314.65999182884" style="font-size: 11px; font-family: Arial, Helvetica;">Interior
+                    </text>
+                    <text x="84.7" y="248.28493558747022" style="font-size: 11px; font-family: Arial, Helvetica;">NASA
+                    </text>
+                    <text x="0" y="234.2979784136572" style="font-size: 11px; font-family: Arial, Helvetica;">USDA
+                    </text>
+                    <text x="847" y="274.9307778633968" style="font-size: 11px; font-family: Arial, Helvetica;">Other
+                    </text>
+                    <text x="423.5" y="215.516308704354" style="font-size: 11px; font-family: Arial, Helvetica;">DOT
+                    </text>
+                    <text x="847" y="253.22486721865093" style="font-size: 11px; font-family: Arial, Helvetica;">DOE
+                    </text>
+                    <text x="592.9000000000001" y="205.29511850767727"
+                          style="font-size: 11px; font-family: Arial, Helvetica;">NSF
+                    </text>
+                    <text x="84.7" y="178.75601847302744" style="font-size: 11px; font-family: Arial, Helvetica;">DHS
+                    </text>
+                    <text x="0" y="140.84514617584546" style="font-size: 11px; font-family: Arial, Helvetica;">NIH
+                    </text>
+                    <text x="0" y="57.256041745318385" style="font-size: 11px; font-family: Arial, Helvetica;">HHS
+                    </text>
+                    <text x="508.2000000000001" y="27.060399352513173"
+                          style="font-size: 11px; font-family: Arial, Helvetica;">VA
+                    </text>
+                    <text x="0" y="11.39783722842526" style="font-size: 11px; font-family: Arial, Helvetica;">EPA</text>
+                </g>
+            </svg>
+        </div>
+    </div>
+    <footer>
+        <p>Funding Data from <a href="http://www.aaas.org/page/historical-trends-federal-rd#Agency">Historical Trends in Federal R&D by AAAS last updated May 2014</a>
+        </p>
+    </footer>
+</div>
+<!--! end of #container -->
+
+
+
+<!--[if lt IE 7 ]>
+<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+<script>window.attachEvent('onload', function () {
+    CFInstall.check({mode: 'overlay'})
+})</script>
+<![endif]-->
+
+</body>
+</html>

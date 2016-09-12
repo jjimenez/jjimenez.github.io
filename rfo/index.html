@@ -1,0 +1,85 @@
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="styles/style.css">
+
+<!-- bower:css -->
+<link rel="stylesheet" href="bower_components/nouislider/distribute/jquery.nouislider.min.css" />
+<link rel="stylesheet" href="bower_components/nouislider/distribute/jquery.nouislider.pips.min.css" />
+<link rel="stylesheet" href="bower_components/qtip2/jquery.qtip.css" />
+<link rel="stylesheet" href="bower_components/bootstrap/docs/assets/css/bootstrap.css" />
+<link rel="stylesheet" href="bower_components/bootstrap-css/css/bootstrap.min.css" />
+<!-- endbower -->
+
+    <!-- bower:js -->
+    <script src="bower_components/modernizr/modernizr.js"></script>
+    <script src="bower_components/jquery/jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/numeral/numeral.js"></script>
+    <script src="bower_components/nouislider/distribute/jquery.nouislider.all.min.js"></script>
+    <script src="bower_components/ericmmartin.simplemodal/src/jquery.simplemodal.js"></script>
+    <script src="bower_components/eventEmitter/EventEmitter.js"></script>
+    <script src="bower_components/eventie/eventie.js"></script>
+    <script src="bower_components/imagesloaded/imagesloaded.js"></script>
+    <script src="bower_components/qtip2/jquery.qtip.js"></script>
+    <script src="bower_components/bootstrap/docs/assets/js/bootstrap.js"></script>
+    <script src="bower_components/d3/d3.js"></script>
+    <script src="bower_components/dimple/dist/dimple.v2.1.6.min.js"></script>
+    <script src="bower_components/bootstrap-css/js/bootstrap.min.js"></script>
+    <!-- endbower -->
+</head>
+<body style="margin: 35px">
+<h1>Index of draft visualizations</h1>
+<div id="not_chrome" style="font-weight: bold; font-size: large">
+    Currently these visualizations work best in Google's Chrome Browser.  Sorry for the inconvenience.
+</div>
+<br />
+<p>
+These visualizations are intended to provide a proof of concept in order to generate more questions and direction for a broader project.
+</p>
+
+<p> The following holds true for the visualizations: </p>
+<ul>
+<li> Data is that of Routing Forms and Awards Processed into Sponsored Programs between 1/1/2011 and 9/10/2014.</li>
+<li> Investigators are <i>connected</i> if they appeared on the same grant together as Principal Investigator, Co-Investigator, or Multiple Investigators.</li>
+<li> Filtering by a college will display individuals in that college <i>and the individuals they occur with on Routing forms, even if they are in another college.</i></li>
+<li> Date filters will display those individuals who's <i>first collaboration</i> happened between the start and end date.</li>
+<li> Matrix cells and links on the Chord Diagram and Force Directed Graph indicate the scale of the awarded grants when awarded.</li>
+</ul>
+<a href='occurrencev4.html'>Matrix of Researcher co-occurence on Proposals</a>
+<br />
+<a href='forcev4.html'>Force directed Graph of Researcher co-occurrence on Proposals</a>
+<br/>
+<a href='bundlev4.html'>Chord Diagram of Researcher co-occurrence on Proposals</a>
+<br/>
+<a href='similarityv3.html'>(Early stage) Similarity Matrix based on Titles and Project Summaries of awards in June, July, and August 2014</a>
+<br/>
+<br />
+<h2>Other Visualizations in progress</h2>
+<a href="productivity.html">Sample of Researcher Productivity</a>
+<br/>
+<a href="funding_watch.html">Funding Watch Changes 2011-2014 with Highlights for Dept Health Human Services and Business &amp; Corporations</a>
+<br/>
+<a href="UI_research_dollars.html">Dollars distributed geographically -- preliminary sample data</a>
+<br />
+<a href="rcr_treemap.html">Sample of Compliance with RCR Requirements</a>
+<br/>
+<a href="calendar.html"> --May not be functional -- Sample of Researcher Funding History / Proposals</a>
+<br/>
+<a href="federal_research_funding.html">Federal Research Funding 2004-2015</a>
+<br/>
+<!--<a href="docs/funding_slides.pptx">Sample slides</a>-->
+<!--<br/>-->
+
+<div id="not_chrome" style="font-weight: bold; font-size: large">
+    Currently these visualizations work best in Google's Chrome Browser.  Sorry for the inconvenience.
+</div>
+
+<div class="footer" style="font-size: x-small; margin-top: 50px;">
+<p>
+    Inspired by Mike Bostock's d3 visualizations.
+</p>
+</div>
+</body>
+</html>

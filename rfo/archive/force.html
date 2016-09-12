@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+    <link type="text/css" rel="stylesheet" href="../styles/style.css">
+<style>
+
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
+
+</style>
+<body>
+	<h1><i>Routing Form</i> Co-occurrence</h1>
+	<aside style="margin-top:80px;">
+	<p>Filter: <select id="college">
+	</select>
+
+	</p><p>This force directed graph visualizes co-occurrences in Routing Forms by PI.
+
+	</p><p>Each colored dot represents a PI. Bolder links indicate PIs have co-occurred more frequently.
+
+	</p><p>Built with <a href="http://d3js.org/">d3.js</a>.
+	</p></aside>
+<script src="../javascript/d3.v2.min.js"></script>
+<script>
+
+var width = 1080,
+    height = 800;
+
+var color = d3.scale.category20();
+
+var force = d3.layout.force()
+    .charge(-20)
+    .linkDistance(30)
+    .size([width, height]);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var college_selected = 'all';
+
+function jump() {
+	d3.select("svg").remove();
+	var svg = d3.select("body").append("svg")
+	    .attr("width", width)
+	    .attr("height", height);
+	d3.json("occurrence.json", function(occurrence) {
+	  graph = occurrence[college_selected];
+	  college_list = occurrence.colleges;
+	  d3.select('#college')
+	    .selectAll('option')
+	    .data(college_list)
+	    .enter()
+	    .append('option')
+	    .attr("value",function(d){ return d.key;})
+	    .attr("selected",function(d){ return d.key == college_selected ? 'true' : null;})
+	    .text(function(d) { return d.college; });
+	  color = d3.scale.category20().domain(college_list.map( function (college) { return college.college } ));
+	  force
+	      .nodes(graph.nodes)
+	      .links(graph.links)
+	      .start();
+
+	  var link = svg.selectAll(".link")
+	      .data(graph.links)
+	    .enter().append("line")
+	      .attr("class", "link")
+	      .style("stroke-width", function(d) { return d.value * 2; });
+
+	  var node = svg.selectAll(".node")
+	      .data(graph.nodes)
+	    .enter().append("circle")
+	      .attr("class", "node")
+	      .attr("r", 5)
+	      .style("fill", function(d) { return color(d.pi_college); })
+	      .call(force.drag);
+
+	  node.append("title")
+	      .text(function(d) { return d.pi + " -- College: " + d.pi_college + ", Department: " + d.pi_department; });
+
+	  force.on("tick", function() {
+	    link.attr("x1", function(d) { return d.source.x; })
+		.attr("y1", function(d) { return d.source.y; })
+		.attr("x2", function(d) { return d.target.x; })
+		.attr("y2", function(d) { return d.target.y; });
+
+	    node.attr("cx", function(d) { return d.x; })
+		.attr("cy", function(d) { return d.y; });
+	  });
+	});
+  }
+
+
+  function truncate_pi(pi) {
+    rval = pi.split(',')[0] + ',';
+    rval = rval + pi.split(',')[1][1];
+    return rval;
+  }
+
+jump();
+
+  d3.select("#college").on("change", function() {
+    college_selected = this.value;
+    jump();
+  });
+
+</script>
+</body>
+</html>
+
