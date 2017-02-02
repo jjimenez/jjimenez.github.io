@@ -1,0 +1,88 @@
+<html>
+<head>
+<title>Word related stuff</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<style>
+#haiku, #explain{
+	margin: 20px 20px;
+	padding: 25px;
+	border: 2px solid grey;
+}
+#haiku {
+    	font-size: xx-large;
+    	text-align: center;
+    	font-style: italic;
+	background-color: antiquewhite;
+}
+
+#explain{
+	background-color: #f5f5f5;
+	margin-top: 50px;
+}
+
+#controls{
+	text-align: center;
+	align-content: center;
+}
+
+#regenerate {
+  background: #ebddeb;
+  background-image: -webkit-linear-gradient(top, #ebddeb, #dec7de);
+  background-image: -moz-linear-gradient(top, #ebddeb, #dec7de);
+  background-image: -ms-linear-gradient(top, #ebddeb, #dec7de);
+  background-image: -o-linear-gradient(top, #ebddeb, #dec7de);
+  background-image: linear-gradient(to bottom, #ebddeb, #dec7de);
+  -webkit-border-radius: 29;
+  -moz-border-radius: 29;
+  border-radius: 29px;
+  -webkit-box-shadow: 0px 1px 3px #666666;
+  -moz-box-shadow: 0px 1px 3px #666666;
+  box-shadow: 0px 1px 3px #666666;
+  font-family: Arial;
+  color: #000000;
+  font-size: 20px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+}
+
+.regenerate:hover {
+  background: #3cfce2;
+  text-decoration: none;
+}
+</style>
+</head>
+<body>
+
+<div id='haiku'>
+<h1>Haiku</h1>
+<p id='loading'>Loading....</p>
+<p id='line1'></p>
+<p id='line2'></p>
+<p id='line3'></p>
+</div>
+
+<div id='controls'>
+<button type='button' id='regenerate'>Try Again</button>
+</div>
+
+<div id='explain'>
+<h2>Explanation</h2>
+<p>
+I'm playing with the concept of programatically generated poetry.  It has been done.  It has been done better.
+I'm using a wordlist from SCOWL and friends, particularly the <a href='http://wordlist.aspell.net/other/'>Parts of Speech Database</a>.
+I've pre-processed the file into json and added attributes for each part of speech so I can use it later.  I've also added syllable
+counts by using the ruby Syllable Counter that won the bounty on <a href='https://bountify.co/syllable-counter-in-ruby'>Bountify</a>.  
+Specifically, the one on <a href='https://github.com/sj26/syllable'>github</a>.  That and a really <b>simple</b> random word picker
+and I have this.  Don't pick on it too much.  It might grow up to be a great poet one day, but it is just starting out.  <i>Unfortunately
+it thinks it knows too many big words.</i>  If you find a good haiku here, post it somewhere, they are otherwise efemeral. If you want 
+to find a good one, go read some <a href='https://en.wikipedia.org/wiki/Matsuo_Bash%C5%8D'>Bashō</a>.
+</p>
+
+</div>
+
+<script src="script/main.js"></script>
+<script type="text/javascript">
+
+</script>
+</body>
+</html>
