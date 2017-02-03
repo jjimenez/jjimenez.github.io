@@ -20,9 +20,12 @@
 	margin-top: 50px;
 }
 
-#controls{
+#controls, #score_div{
 	text-align: center;
 	align-content: center;
+}
+#score_div {
+	visibility: hidden;
 }
 
 #regenerate {
@@ -49,6 +52,12 @@
   background: #3cfce2;
   text-decoration: none;
 }
+
+#tweet_container {
+	margin-top: 15px;
+}
+
+
 </style>
 </head>
 <body>
@@ -62,7 +71,13 @@
 </div>
 
 <div id='controls'>
+<input type='checkbox' name='big_words' id='big_words'><label for='big_words'>Minimize Big Words</label> 
 <button type='button' id='regenerate'>Try Again</button>
+<div id='tweet_container'>
+</div>
+</div>
+<div id='score_div'>
+<p>Score: <span id='score'></span>%</p>
 </div>
 
 <div id='explain'>
@@ -81,8 +96,21 @@ to find a good one, go read some <a href='https://en.wikipedia.org/wiki/Matsuo_B
 </div>
 
 <script src="script/main.js"></script>
-<script type="text/javascript">
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
 
-</script>
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+
+  return t;
+}(document, "script", "twitter-wjs"));</script>
 </body>
 </html>
