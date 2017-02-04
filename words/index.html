@@ -54,7 +54,25 @@
 }
 
 #tweet_container {
-	margin-top: 15px;
+  margin-top: 25px;
+  transform: scale(1.5);
+}
+
+#haiku p.failed {
+  color:red;
+  text-decoration: line-through;
+}
+
+#haiku p span{
+  color:black;
+}
+.row div{ 
+ height: 75;
+ vertical-align: middle;
+}
+
+#options , #regenerate_container {
+	display: inline-block;
 }
 
 
@@ -64,15 +82,22 @@
 
 <div id='haiku'>
 <h1>Haiku</h1>
-<p id='loading'>Loading....</p>
-<p id='line1'></p>
-<p id='line2'></p>
-<p id='line3'></p>
+<p id='loading'>Loading....<br/><br/>It takes serious effort to load over 250,000 words and process them into usable content.</p>
+<p><span id='line1'></span></p>
+<p><span id='line2'></span></p>
+<p><span id='line3'></span></p>
 </div>
 
-<div id='controls'>
-<input type='checkbox' name='big_words' id='big_words'><label for='big_words'>Minimize Big Words</label> 
-<button type='button' id='regenerate'>Try Again</button>
+<div id='controls' class='row'>
+<div id='options'>
+<input type='checkbox' name='big_words' id='big_words'><label for='big_words'>Minimize Big Words</label> <br/>
+<input type='checkbox' name='vowels' id='vowels' checked><label for='vowels'>Require Vowels</label> <br/>
+<input type='checkbox' name='acronyms' id='acronyms' checked><label for='acronyms'>Remove Acronyms</label> <br/>
+<input type='checkbox' name='common' id='common' checked><label for='common'>Common Words Only</label> <br/>
+</div>
+<div id='regenerate_container'>
+<button type='button' id='regenerate'>Make Another  Haiku</button>
+</div>
 <div id='tweet_container'>
 </div>
 </div>
@@ -89,12 +114,16 @@ I've pre-processed the file into json and added attributes for each part of spee
 counts by using the ruby Syllable Counter that won the bounty on <a href='https://bountify.co/syllable-counter-in-ruby'>Bountify</a>.  
 Specifically, the one on <a href='https://github.com/sj26/syllable'>github</a>.  That and a really <b>simple</b> random word picker
 and I have this.  Don't pick on it too much.  It might grow up to be a great poet one day, but it is just starting out.  <i>Unfortunately
-it thinks it knows too many big words.</i>  If you find a good haiku here, post it somewhere, they are otherwise efemeral. If you want 
+it thinks it knows too many big words.</i>  
+In order to help make better haiku, for some value of better, I've added some options.  
+The common words list comes from a list of the <a href='https://github.com/first20hours/google-10000-english'>10,000 most common words</a>.
+If you find a good haiku here, tweet it, they are otherwise efemeral. If you want 
 to find a good one, go read some <a href='https://en.wikipedia.org/wiki/Matsuo_Bash%C5%8D'>Bashō</a>.
 </p>
 
 </div>
 
+<script src="data/common_words.js"></script>
 <script src="script/main.js"></script>
 <script>window.twttr = (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0],
