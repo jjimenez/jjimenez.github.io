@@ -13,7 +13,7 @@ var grouped_words = [];
 
 
 var haiku_parts = [['Noun', 'Noun_Phrase'], ['Verb', 'Verb_transitive', 'Verb_intransitive'], ['Adjective'], ['Adverb'], ['Preposition'],['Pronoun'], ['Definite_Article','Indefinite_Article']];
-var min_score = 5; // how many haiku_parts have to be in the end result 
+var min_score = 2; // how many haiku_parts have to be in the end result 
 
 var line1_map = ['Noun','Noun'];
 var line2_map = ['Definite_Article', 'Noun', 'Verb'];
@@ -45,10 +45,8 @@ $( document ).ready(function() {
 	    success: function (data) {
 		word_set = data;
 		tagged_common_words  = only_common_words(word_set);
-		words_to_use = word_set;
-		if (require_common_words) { words_to_use = tagged_common_words; }
-		make_haiku(words_to_use);
-		$('#regenerate').on('click', function() { make_haiku(words_to_use); });
+		make_haiku();
+		$('#regenerate').on('click', function() { make_haiku(); });
 		$('#big_words').on('change', function() {
             		var check = $(this).prop('checked');
 			if (check) {
@@ -77,8 +75,10 @@ $( document ).ready(function() {
             		var check = $(this).prop('checked');
 			if (check) {
 				require_common_words = true;
+				grouped_words = [];
 			} else {
 				require_common_words = false;
+				grouped_words = [];
 			}
 		});
 		$('#controls').show();
@@ -113,7 +113,8 @@ function match_pos(words, part_of_speech) {
   	});
 }
 
-function make_haiku(words) {
+function make_haiku() {
+		if (require_common_words) { words = tagged_common_words; } else { words = word_set }
 		var line1_words, line2_words, line3_words;
 		if (use_map > -1) {
 			line1_words = get_mapped_words(words, maps[use_map][0], 5);
@@ -226,9 +227,7 @@ function get_pos_word(word_list, pos) {
 }
 
 function only_common_words(word_list) {
-	return word_list.filter(function(value) { 
-		return common_words.indexOf(value.word) > -1;
-	 });
+	return words_by_pos(word_list, 'Common');
 }
 function words_by_pos(word_list, pos) {
 	if (grouped_words[pos] == undefined) {

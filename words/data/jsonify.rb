@@ -12,11 +12,16 @@ module Words  extend self
 
 		parts_of_speech = parts_of_speech_text.each_slice(2).to_a
 
-	 	#header = %w{word types syllables} + parts_of_speech.map{ |key, name| name }
+	 	#header = %w{word types syllables} + parts_of_speech.map{ |key, name| name } + 'common'
 
 		words = []
 		puts 'processing'
 		start_time = Time.now
+		common_words = []
+
+		common_words_raw = File.readlines('google-10000-english-usa-no-swears.txt')
+		common_words= common_words_raw.collect { |x| x.strip || x }
+		common_count = 0
 
 		File.open('part-of-speech.txt', 'r') do |f1|
 			line = f1.gets
@@ -33,6 +38,8 @@ module Words  extend self
 						is_part = types.include? key
 						json_word[name] = (is_part ? 1 : 0)
 					end
+					common_count += 1 if common_words.include? word
+					json_word['Common'] = (common_words.include?(word) ? 1 : 0)
 					words.push(json_word)
 				end
 				lines_processed += 1
@@ -61,13 +68,17 @@ module Words  extend self
 		puts 'verb sample'
 		puts words.select { |word| word['Verb'] == 1 || word['Verb_transitive'] == 1 || word['Verb_intransitive'] == 1 }.sample(10)
 
+		puts "common sample out of #{common_count}"
+		puts words.select { |word| word['Common'] == 1 }.sample(10)
+
 	end
 
 	@@words = []
 
 	def read_file
-		file = File.open("parts_of_speech.json", "rb")
-		contents = file.read
+		File.open("parts_of_speech.json", "rb") do |f|
+			contents = f.read
+		end
 
 		@@words = JSON.parse(contents)
 		true
