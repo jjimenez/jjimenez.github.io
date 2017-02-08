@@ -10,8 +10,6 @@ var words_to_use;
 
 var grouped_words = [];
 
-
-
 var haiku_parts = [['Noun', 'Noun_Phrase'], ['Verb', 'Verb_transitive', 'Verb_intransitive'], ['Adjective'], ['Adverb'], ['Preposition'],['Pronoun'], ['Definite_Article','Indefinite_Article']];
 var min_score = 2; // how many haiku_parts have to be in the end result 
 
@@ -37,7 +35,23 @@ maps.push([line1_map, line2_map, line3_map]);
 
 var use_map = -1;
 
+var locks = [false, false, false];
+var line1, line2, line3;
+
 $( document ).ready(function() {
+    $('.lock').on('click', function(event) {
+    	var target = $(event.target).closest('span');
+	var icon = target.find('i');
+	var which_line = parseInt(target.attr('data-for')) -1;
+	var locked = locks[which_line];
+	locks[which_line] = !locks[which_line];
+	if (locked) {
+		icon.removeClass('fa-lock').addClass('fa-unlock');
+        } else {
+	  icon.removeClass('fa-unlock').addClass('fa-lock');
+        }
+    });
+
     $('#controls').hide();
 	$('#loading').show();
     $.ajax({
@@ -138,24 +152,30 @@ function make_haiku() {
 			
 		}
 		
-		var line1 = jQuery.map(line1_words, function(word) { return word.word; } );
-		var line2 = jQuery.map(line2_words, function(word) { return word.word; } );
-		var line3 = jQuery.map(line3_words, function(word) { return word.word; } );
+		line1 = locks[0] ? line1 : jQuery.map(line1_words, function(word) { return word.word; } );
+		line2 = locks[1] ? line2 : jQuery.map(line2_words, function(word) { return word.word; } );
+		line3 = locks[2] ? line3 : jQuery.map(line3_words, function(word) { return word.word; } );
+
 		$('#haiku p').removeClass('failed');
 		$('#line1').text(line1.join(' '));
 		$('#line2').text(line2.join(' '));
 		$('#line3').text(line3.join(' '));
+		if ($('.lock i.fa-unlock, .lock i.fa-lock').length == 0) {
+			$('.lock i').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-unlock');
+		}
 		$("#haiku p:contains('tried hard but failed')").addClass('failed');
 		$('#score').text(Math.round(score/haiku_parts.length * 100,2) );
 		var twitter_text = [line1.join(' '), line2.join(' '), line3.join(' '),''].join('\n');
 		set_twitter_button(twitter_text);
 		$('.twitter-share-button').attr('data-text',twitter_text);
+
 	
 }
 
 function set_twitter_button(text_to_share) {
 	$('#tweet_container').empty();
-	twttr.widgets.createShareButton(
+	if (twttr && twttr.widgets) {
+	  twttr.widgets.createShareButton(
   		'https://jjimenez.github.io/words/',
 		document.getElementById('tweet_container'),
 		{
@@ -165,7 +185,8 @@ function set_twitter_button(text_to_share) {
 			size: 'large',
 			dnt: true
 		}
-	);
+	  );
+	}
 }
 
 function random_selection(arr) {

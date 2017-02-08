@@ -2,6 +2,7 @@
 <head>
 <title>Bad Haiku Generator</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
 #haiku, #explain{
 	margin: 20px 20px;
@@ -74,7 +75,9 @@
 #options , #regenerate_container {
 	display: inline-block;
 }
-
+.lock {
+	margin-right: 25px;
+}
 
 </style>
 </head>
@@ -82,10 +85,10 @@
 
 <div id='haiku'>
 <h1>Haiku</h1>
-<p id='loading'>Loading....<br/><br/>It takes serious effort to load over 250,000 words and process them into usable content.</p>
-<p><span id='line1'></span></p>
-<p><span id='line2'></span></p>
-<p><span id='line3'></span></p>
+<p id='loading'>Loading....<br/><br/></p>
+<p><span class='lock' data-for='1' id='line1_lock'><i class='fa fa-spinner fa-spin'></i></span><span id='line1'></span></p>
+<p><span class='lock' data-for='2' id='line2_lock'><i class='fa fa-spinner fa-spin'></i></span><span id='line2'></span></p>
+<p><span class='lock' data-for='3' id='line3_lock'><i class='fa fa-spinner fa-spin'></i></span><span id='line3'></span></p>
 </div>
 
 <div id='controls' class='row'>
