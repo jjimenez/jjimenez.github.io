@@ -1,9 +1,11 @@
+
 var word_set;
 var big_word_threshhold = 3; // syllables to consider a word big
 var big_word_factor = 1.0; // how likely to allow big words between 0 and 1.
 var require_vowels = true;  // vowels are nice in words
 var remove_acronyms = true; // Acronyms aren't that great
 var require_common_words = true; // use only the 10,000 most common words (minus a bunch of swear words)
+var require_common_pairs = false; // make sure subsequent words in the same line are commonly found in that order
 
 var tagged_common_words;
 var words_to_use;
@@ -95,6 +97,14 @@ $( document ).ready(function() {
 				grouped_words = [];
 			}
 		});
+		$('#pairs').on('change', function() {
+            		var check = $(this).prop('checked');
+			if (check) {
+				require_common_pairs = true;
+			} else {
+				require_common_pairs = false;
+			}
+		});
 		$('#controls').show();
 		$('#loading').hide();
 	    }
@@ -135,18 +145,18 @@ function make_haiku() {
 			line2_words = get_mapped_words(words, maps[use_map][1], 7);
 			line3_words = get_mapped_words(words, maps[use_map][2], 5);
 		} else {
-			line1_words = get_syllables(words, 5);
-			line2_words = get_syllables(words, 7);
-			line3_words = get_syllables(words, 5);
+			line1_words = get_syllables(words, 5, '');
+			line2_words = get_syllables(words, 7, line1_words[line1_words.length-1].word);
+			line3_words = get_syllables(words, 5, line2_words[line2_words.length-1].word);
 		}
 
 		var all_words = line1_words.concat(line2_words).concat(line3_words);
 		var score = haiku_score(all_words);
 
 		while (score < min_score) {
-			line1_words = get_syllables(words, 5);
-			line2_words = get_syllables(words, 7);
-			line3_words = get_syllables(words, 5);
+			line1_words = get_syllables(words, 5,'');
+			line2_words = get_syllables(words, 7, line1_words[line1_words.length-1].word);
+			line3_words = get_syllables(words, 5, line2_words[line2_words.length-1].word);
 			all_words = line1_words.concat(line2_words).concat(line3_words);
 			score = haiku_score(all_words);
 			
@@ -189,16 +199,28 @@ function set_twitter_button(text_to_share) {
 	}
 }
 
-function random_selection(arr) {
+function random_selection(arr,previous_word) {
 	var possible_word = arr[Math.floor(Math.random() * arr.length)];
-	while (!evaluate_word(possible_word)) {
+	var max_tries = 599;
+	var tries = 0;
+	while (!evaluate_word(possible_word, previous_word) && tries <= max_tries) {
 		possible_word = arr[Math.floor(Math.random() * arr.length)];
+		tries += 1;
 	}
+	if (tries > max_tries) { console.log('gave up on finding a word that passed evaluation for previous word: ' + previous_word); }
 	return possible_word;
 }
 
-function evaluate_word(possible_word) {
-	return is_short_enough(possible_word) && has_vowels(possible_word) && is_not_acronym(possible_word);
+function evaluate_word(possible_word, previous_word) {
+	return is_short_enough(possible_word) 
+		&& has_vowels(possible_word) 
+		&& is_not_acronym(possible_word)
+		&& is_commonly_paired(previous_word, possible_word.word);
+}
+
+function is_commonly_paired(first_word, second_word) {
+  if (second_word === '' || !require_common_pairs) { return true; }
+  return common_pairs.binaryIndexOf(first_word + ' ' + second_word) > -1;
 }
 
 function is_short_enough(possible_word){
@@ -244,7 +266,7 @@ function get_mapped_words(word_list,map, target_count) {
 
 function get_pos_word(word_list, pos) {
 	var pos_words = words_by_pos(word_list, pos);
-	return random_selection(pos_words);
+	return random_selection(pos_words,'');
 }
 
 function only_common_words(word_list) {
@@ -278,13 +300,14 @@ function pos_filter(pos, possible_word, index, array) {
 	return possible_word[pos] == 1;
 }
 
-function get_syllables(word_list, target_count) {
+function get_syllables(word_list, target_count, last_word_previous_line) {
 	var max_tries = 99;
 	var tries = 0;
 	var line_words = [];
 	var matched = false;
 	while (tries < max_tries && !matched) {
-		line_words.push(random_selection(word_list));
+		var previous_word = line_words.length > 0 ? line_words[line_words.length -1].word : last_word_previous_line;
+		line_words.push(random_selection(word_list, previous_word));
 		potential_count = syllable_total(line_words);
 		//console.log('potential_count: ' + potential_count);
 		if (potential_count > target_count) {
@@ -307,4 +330,41 @@ function syllable_total(line) {
 //	console.log(count);
 	return count;
 }
+
+/**
+ * Performs a binary search on the host array. This method can either be
+ * injected into Array.prototype or called with a specified scope like this:
+ * binaryIndexOf.call(someArray, searchElement);
+ *
+ * @param {*} searchElement The item to search for within the array.
+ * @return {Number} The index of the element which defaults to -1 when not found.
+ */
+function binaryIndexOf(searchElement) {
+	'use strict';
+
+	var minIndex = 0;
+	var maxIndex = this.length - 1;
+	var currentIndex;
+	var currentElement;
+	var resultIndex;
+
+	while (minIndex <= maxIndex) {
+		resultIndex = currentIndex = (minIndex + maxIndex) / 2 | 0;
+		currentElement = this[currentIndex];
+
+		if (currentElement < searchElement) {
+			minIndex = currentIndex + 1;
+		}
+		else if (currentElement > searchElement) {
+			maxIndex = currentIndex - 1;
+		}
+		else {
+			return currentIndex;
+		}
+	}
+
+	return ~maxIndex;
+}
+
+Array.prototype.binaryIndexOf = binaryIndexOf;
 

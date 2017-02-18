@@ -55,7 +55,9 @@
 }
 
 #tweet_container {
-  margin-top: 30px;
+  position: relative;
+  top: 40px;
+  left: 100px;
   transform: scale(1.5);
 }
 
@@ -97,6 +99,7 @@
 <input type='checkbox' name='vowels' id='vowels' checked><label for='vowels'>Require Vowels</label> <br/>
 <input type='checkbox' name='acronyms' id='acronyms' checked><label for='acronyms'>Remove Acronyms</label> <br/>
 <input type='checkbox' name='common' id='common' checked><label for='common'>Common Words Only</label> <br/>
+<input type='checkbox' name='pairs' id='pairs'><label for='pairs'>Prefer commonly paired words</label> <br/>
 </div>
 <div id='regenerate_container'>
 <button type='button' id='regenerate'>Make Another  Haiku</button>
@@ -124,9 +127,14 @@ If you find a good haiku here, tweet it, they are otherwise efemeral. If you wan
 to find a good one, go read some <a href='https://en.wikipedia.org/wiki/Matsuo_Bash%C5%8D'>Bashō</a>.
 </p>
 <p>Lock in individual lines if you like them and click the Make Another Haiku button to retry the other lines only.</p>
+<p>I've added a short (250K) list of the top commonly paired words and the option to <i>prefer</i> subsequent words that appear in this list.
+I don't like the results because the list of pairs is too short, but feel free to play with it. It sometimes gives up after trying to get a
+commonly paired word and other times the fact that the word is commonly paired is a bad thing (as in line endings).  I carry over previous words
+into the next line and that helps for continuity from line to line.</p>
 
 </div>
 
+<script src='data/common_pairs.js'></script>
 <script src="script/main.js"></script>
 <script>window.twttr = (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0],
