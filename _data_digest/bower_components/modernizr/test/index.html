@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+  <meta charset="UTF-8">
+  <title>Modernizr Test Suite</title>
+  <link rel="stylesheet" href="qunit/qunit.css">
+  <style>
+     body { margin-bottom: 150px;}
+     #testbed { font-family: Helvetica; color: #444; padding-bottom: 100px;}
+     #testbed button { margin: 30px; font-size: 13px;}
+     .data-notes, .offScreen { display:none;}
+     table { width: 100%;}
+     tbody tr:nth-child(even) td, tbody tr:nth-child(even) th {  border: 1px solid #ccc; border-left: 0; border-right: 0;}
+     table td:nth-child(even), table th:nth-child(even) { background: #e6e6e6;}
+     table tbody tr:hover td, table tbody tr:hover th { background: #e1e100!important;}
+     td.wrong { background:red!important;}
+     #html5section { visibility: hidden; }
+     h1 label { display:none;}
+     #mod-output { padding: 0 0 0 16px;}
+     #mod-output ul { margin: 0;}
+     #mod-output li { color: #854747; }
+     #mod-output li.yes{color:#090;}
+     #mod-output li b{color:#000;}
+     #mod-output {font:14px/1.3 Inconsolata,Consolas,monospace;
+                    -webkit-column-count: 5;
+                       -moz-column-count: 5;
+                            column-count: 5;}
+  </style>
+  
+  <script src="../modernizr.js"></script>
+  <script src="js/polyfills.js"></script>
+  <script src="js/detect-global.js"></script>
+  
+  <script src="qunit/qunit.js"></script>
+  <script src="js/jquery-1.4.2.js"></script>
+  
+  <script src="js/jsonselect.js"></script>
+  <script src="js/uaparser.js"></script>
+  
+  <script src="js/test-setup.js"></script>
+  
+  <script src="js/unit.js"></script>
+  <script src="js/unit-caniuse.js"></script>
+</head>
+<body>
+  <h1 id="qunit-header">Modernizr Test Suite</h1>
+  <h2 id="qunit-banner"></h2>
+  <div id="qunit-testrunner-toolbar"></div>
+  <h2 id="qunit-userAgent"></h2>
+
+  <ol id="qunit-tests"></ol>
+  <div id="mod-output"></div>
+
+
+  <br>
+ 
+  <section><aside>this is an aside within a section</aside></section>
+  
+  <script>
+  (function(){
+
+    var str = '';
+    for (var prop in Modernizr) {
+      
+      if (typeof Modernizr[prop] === 'function') continue;
+      
+      if (prop == 'inputtypes' || prop == 'input') {
+        str += '<li><b>'+prop+'{}</b><ul>';
+        for (var field in Modernizr[prop]) {
+          str += '<li class="' + (Modernizr[prop][field] ? 'yes' : '') + '">' + field + ': ' + Modernizr[prop][field] + '</li>';
+        }
+        str += '</ul></li>';
+      } else {
+        str += '<li  id="'+prop+'" class="' + (Modernizr[prop] ? 'yes' : '') + '">' + prop + ': ' + Modernizr[prop] + '</li>';
+      }
+    }
+    
+    setTimeout(function(){
+      var modOutput = document.getElementById('mod-output')
+      modOutput.innerHTML = str;
+      if (Modernizr.csscolumns) modOutput.parentNode.insertBefore(modOutput, document.getElementById('qunit-tests'));
+    }, 100);
+    
+  })();
+  
+  </script>
+  
+  
+  
+  <a href="#"   id="caniusetrigger" 
+                onclick="return revealreftests(this)" 
+                title="add a #caniuse hash to this page to make this automatic"
+                style="font-size: 38px; font-family: monospace">Show the Ref Tests from Caniuse and Modernizr</a>
+
+
+  <script>
+    function revealreftests(a){
+        
+        if (!a) a = document.getElementById('caniusetrigger');
+        a.parentNode && a.parentNode.removeChild(a);
+        
+        var iframe = document.createElement('iframe');
+        iframe.src = 'caniuse.html';
+        iframe.style.cssText = 'width: 100%; height: 7000px; border: 15px double #F0C; \
+                                -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; ';
+        document.body.appendChild(iframe);
+        
+        return false;
+    }
+    
+    if (location.hash.replace(/^#/,'') == 'caniuse'){
+        setTimeout(revealreftests, 100);
+    }
+  
+  </script>
+  
+  
+</body>
+</html> 
